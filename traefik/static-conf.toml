@@ -1,0 +1,56 @@
+[global]
+    checkNewVersion = true
+    sendAnonymousUsage = false
+
+[entryPoints]
+    [entryPoints.web]
+        address = ":80"
+    [entryPoints.web.http.redirections.entryPoint]
+        to = "websecure"
+        scheme = "https"
+    [entryPoints.websecure]
+        address = ":443"
+
+[providers]
+    providersThrottleDuration = 10
+    [providers.docker]
+        endpoint = "unix:///var/run/docker.sock"
+        exposedByDefault = false
+        network = "alsinet"
+    [providers.file]
+        directory = "/home/traefik/conf"
+        watch = true
+[api]
+    dashboard = true
+[log]
+    level = "ERROR"
+    filePath = "/home/traefik/logs/full.log"
+    format = "common"
+[accessLog]
+    filePath = "/home/traefik/logs/access.log"
+    bufferingSize = 100
+    [accessLog.fields]
+        defaultMode = "keep"
+        [accessLog.fields.names]
+            "StartLocal" = "keep"
+            "StartUTC" = "drop"
+
+[certificatesResolvers]
+  [certificatesResolvers.default]
+      [certificatesResolvers.default.acme]
+            email = "invisible_blade@bk.ru"
+            storage = "acme.json"
+            caServer = "https://acme-v02.api.letsencrypt.org/directory"
+            #caServer = "https://acme-staging-v02.api.letsencrypt.org/directory"
+            [certificatesResolvers.default.acme.dnsChallenge]
+                resolvers = ["1.1.1.1:53","8.8.8.8:53"]
+                provider = "manual"
+                delayBeforeCheck = "10s"
+
+[docker]
+    endpoint = "unix:///var/run/docker.sock"
+#       domain = "example.com"
+            watch = true
+            exposedbydefault = false
+            swarmmode = true
+

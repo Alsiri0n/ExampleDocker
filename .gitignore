@@ -1,0 +1,12 @@
+/traefik/acme.json
+/traefik/.env
+/traefik/data/logs/*
+/traefik/data/cert/*
+/traefik/data/credentials
+/postgres/data/
+/postgres/data/*
+/postgres/.env
+/gitea/data*
+/gitea/.env
+/jenkins/jenkins-data/*
+/nginx/

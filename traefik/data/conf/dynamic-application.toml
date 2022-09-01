@@ -1,0 +1,32 @@
+[http]
+  [http.routers]
+     [http.routers.api]
+       entryPoints = ['websecure']
+       rule = 'Host(`{{ env "TRAEFICHOSTNAME"}}`)'
+       middlewares = ['traefik-auth']
+       service = "api@internal"
+       [http.routers.api.tls]
+     [http.routers.gitea]
+       entryPoints = ['web']
+       rule = 'Host(`{{ env "GITEAHOSTNAME"}}`)'
+       middlewares = ['gitea-https-redirect']
+       service = "gitea-srv"
+     [http.routers.gitea-secure]
+       entryPoints = ['websecure']
+       rule = 'Host(`{{ env "GITEAHOSTNAME"}}`)'
+       service = "gitea-srv"
+       [http.routers.gitea-secure.tls]
+         certResolver = "default"
+         [[http.routers.gitea-secure.tls.domains]]
+           main = '{{ env "CERTNAME"}}'
+  [http.middlewares]
+    [http.middlewares.traefik-auth]
+      [http.middlewares.traefik-auth.basicAuth]
+        usersFile = "/home/traefik/credentials"
+    [http.middlewares.gitea-https-redirect.redirectScheme]
+      scheme = "https"
+      permanent = true
+  [http.services]
+    [http.services.gitea-srv]
+      [[http.services.gitea-srv.loadBalancer.servers]]
+        url = "http://gitea:3000"

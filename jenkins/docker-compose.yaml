@@ -2,6 +2,8 @@ version: "3.8"
 networks:
   alsinet:
     external: true
+  local:
+    external: false
 services:
   jenkins:
     image: jenkins/jenkins 
@@ -13,8 +15,9 @@ services:
       - 50000:50000  
     networks:
       - alsinet
+      - local
     labels:
-        - "traefik.enable=true"
+      - "traefik.enable=true"
     volumes:
       - ./jenkins-data:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock:ro
@@ -27,7 +30,7 @@ services:
     user: root
     container_name: agent
     networks:
-      - alsinet
+      - local
     expose:
       - 22
     environment:

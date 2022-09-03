@@ -1,13 +1,10 @@
+*.env
 /traefik/acme.json
-/traefik/.env
 /traefik/data/logs/*
 /traefik/data/credentials
 /postgres/data/
-/postgres/.env
 /gitea/data/*
-/gitea/.env
 /jenkins/jenkins-data/*
 /jenkins/jenkins-agent
 /jenkins/jenkins-agent.pub
-/jenkins/.env
 /nginx/

@@ -1,32 +1,27 @@
 version: "3.8"
 networks:
-    alsinet:
-            external: true
-    internal:
-            external: false
+  alsinet:
+    external: true
 services:
-        gitea:
-            image: gitea/gitea:1
-            container_name: gitea
-            environment:
-                    - USER_UID=1000
-                    - USER_GID=1000
-                    - DB_TYPE=postgres
-                    - DB_HOST=postgres
-                    - DB_NAME=${db_name}
-                    - DB_USER=${user_name}
-                    - DB_PASSWD=${password}
-                    - TZ=${timezone}
-            restart: always
-            volumes:
-                    - ./data:/data
-                    #- /etc/timezone:/etc/timezone:ro
-                    #- /etc/localtime:/etc/localtime:ro
-            ports:
-                    - "3000:3000"
-                    - "22:22"
-            labels:
-                    - "traefik.enable=true"
-            networks:
-                    - internal
-                    - alsinet
+  gitea:
+    image: gitea/gitea:1
+    restart: unless-stopped
+    container_name: gitea
+    environment:
+      - USER_UID=1000
+      - USER_GID=1000
+      - DB_TYPE=postgres
+      - DB_HOST=postgres
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${USER_NAME}
+      - DB_PASSWD=${PASSWORD}
+      - TZ=${TINEZONE}
+    volumes:
+      - ./data:/data
+    ports:
+      - "3000:3000"
+      - "22:22"
+    labels:
+      - "traefik.enable=true"
+    networks:
+      - alsinet

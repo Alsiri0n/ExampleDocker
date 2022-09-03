@@ -1,24 +1,21 @@
-version: '3'
+version: "3.8"
 networks:
-    alsinet:
-            external: true
-    internal:
-            external: false
+  alsinet:
+    external: true
 services:
-        postgres:
-            image: postgres:latest
-            container_name: postgres
-            restart: always
-            environment:
-                    - POSTGRES_USER=${user_name}
-                    - POSTGRES_PASSWORD=${password}
-                    - POSTGRES_DB=${db_name}
-            labels:
-                    - "traefik.enable=false"
-            networks:
-                    - alsinet
-                    - internal
-            volumes:
-                    - ./data:/var/lib/postgresql/data
-            ports:
-                    - "5432:5432"
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=${USER_NAME}
+      - POSTGRES_PASSWORD=${PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    # labels:
+    #   - "traefik.enable=false"
+    networks:
+      - alsinet

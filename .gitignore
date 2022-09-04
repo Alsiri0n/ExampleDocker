@@ -1,10 +1,7 @@
 *.env
+data/
+!/traefik/data/conf/
 /traefik/acme.json
-/traefik/data/logs/*
-/traefik/data/credentials
-/postgres/data/
-/gitea/data/*
-/jenkins/jenkins-data/*
 /jenkins/jenkins-agent
 /jenkins/jenkins-agent.pub
 /nginx/

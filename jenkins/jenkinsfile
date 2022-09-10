@@ -1,3 +1,26 @@
 pipeline {
-    
+    agent {label "starter"}
+
+    stages {
+
+        stage('Stage 1') {
+            steps { script {
+
+                text = "some text"
+                print text
+                text = 5
+                print text
+                
+                def localText = "local text"
+            }}
+        }
+
+        stage('Stage 2') {
+            steps { script {
+
+                print text
+                print localText
+            }}
+        }
+    }
 }

@@ -24,6 +24,8 @@ services:
     networks:
       - alsinet
       # - local
+    extra_hosts:
+      - ${GITEA_HOST}
 
   # agent:
   #   image: jenkins/ssh-agent:jdk11

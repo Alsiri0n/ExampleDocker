@@ -2,7 +2,7 @@
   [http.routers]
     [http.routers.api]
       entryPoints = ['websecure']
-      rule = 'Host(`{{ env "TRAEFICHOSTNAME"}}`)'
+      rule = 'Host(`{{ env "TRAEFIKHOSTNAME"}}`)'
       middlewares = ['traefik-auth']
       service = "api@internal"
       [http.routers.api.tls]

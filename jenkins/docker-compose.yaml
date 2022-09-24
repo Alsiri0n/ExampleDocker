@@ -2,8 +2,8 @@ version: "3.8"
 networks:
   alsinet:
     external: true
-  local:
-    external: false
+  # local:
+  #   external: false
 services:
   jenkins:
     image: jenkins/jenkins 
@@ -23,17 +23,17 @@ services:
       - "traefik.enable=true"
     networks:
       - alsinet
-      - local
+      # - local
 
-  agent:
-    image: jenkins/ssh-agent:jdk11
-    container_name: agent
-    restart: unless-stopped
-    privileged: true
-    user: root
-    environment:
-      - JENKINS_AGENT_SSH_PUBKEY=${SSHPUBKEY}
-    networks:
-      - local
-    expose:
-      - 22
+  # agent:
+  #   image: jenkins/ssh-agent:jdk11
+  #   container_name: agent
+  #   restart: unless-stopped
+  #   privileged: true
+  #   user: root
+  #   environment:
+  #     - JENKINS_AGENT_SSH_PUBKEY=${SSHPUBKEY}
+  #   networks:
+  #     - local
+  #   expose:
+  #     - 22

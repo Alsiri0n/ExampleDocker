@@ -9,7 +9,7 @@ services:
     restart: unless-stopped
     environment:
       - TZ=${TIMEZONE}
-      - TRAEFICHOSTNAME
+      - TRAEFIKHOSTNAME
       - GITEAHOSTNAME
       - JENKINSHOSTNAME
       - CERTNAME

@@ -6,7 +6,7 @@ services:
   traefik:
     image: traefik:latest
     container_name: traefik
-    restart: unless-stopped
+    restart: always
     environment:
       - TZ=${TIMEZONE}
       - TRAEFIKHOSTNAME

@@ -1,6 +1,7 @@
 version: "3.8"
 networks:
-  alsinet:
+  default:
+    name: ${MYNET}
     external: true
 
 services:
@@ -13,6 +14,7 @@ services:
       - TRAEFIKHOSTNAME
       - GITEAHOSTNAME
       - JENKINSHOSTNAME
+      - KAFKA-UIHOSTNAME
       - CERTNAME
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:rw
@@ -26,4 +28,4 @@ services:
     labels:
       - "traefik.enable=true"
     networks:
-      - "${MYNET}"
+      - default

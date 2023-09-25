@@ -49,12 +49,14 @@ services:
     image: provectuslabs/kafka-ui:latest
     container_name: kafka_ui
     ports:
-      - 8081:8080
+      - 8080:8080
     environment:
       -  DYNAMIC_CONFIG_ENABLED=true
     volumes:
       - ./kui/config.yml:/etc/kafkaui/dynamic_config.yaml
     depends_on:
       - kafka
+    labels:
+      - "traefik.enable=true"
     networks:
       - default

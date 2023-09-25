@@ -19,6 +19,19 @@
         certResolver = "default"
         [[http.routers.gitea-secure.tls.domains]]
           main = '{{ env "CERTNAME"}}'
+    [http.routers.kafka-ui]
+      entryPoints = ['web']
+      rule = 'Host(`{{ env "KAFKA-UIHOSTNAME"}}`)'
+      middlewares = ['kafka-ui-https-redirect']
+      service = "kafka-ui-srv"
+    [http.routers.kafka-ui-secure]
+      entryPoints = ['websecure']
+      rule = 'Host(`{{ env "KAFKA-UIHOSTNAME"}}`)'
+      service = "kafka-ui-srv"
+      [http.routers.kafka-ui-secure.tls]
+        certResolver = "default"
+        [[http.routers.kafka-ui-secure.tls.domains]]
+          main = '{{ env "CERTNAME"}}'
     [http.routers.jenkins]
        entryPoints = ['web']
        rule = 'Host(`{{ env "JENKINSHOSTNAME"}}`)'
@@ -30,13 +43,16 @@
        service = "jenkins-srv"
        [http.routers.jenkins-secure.tls]
          certResolver = "default"
-         [[http.routers.gitea-secure.tls.domains]]
+         [[http.routers.jenkins-secure.tls.domains]]
            main = '{{ env "CERTNAME"}}'
   [http.middlewares]
     [http.middlewares.traefik-auth]
       [http.middlewares.traefik-auth.basicAuth]
         usersFile = "/home/traefik/credentials"
     [http.middlewares.gitea-https-redirect.redirectScheme]
+      scheme = "https"
+      permanent = true
+    [http.middlewares.kafka-ui-https-redirect.redirectScheme]
       scheme = "https"
       permanent = true
     [http.middlewares.jenkins-https-redirect.redirectScheme]
@@ -46,6 +62,9 @@
     [http.services.gitea-srv]
       [[http.services.gitea-srv.loadBalancer.servers]]
         url = "http://gitea:3000"
+    [http.services.kafka-ui-srv]
+      [[http.services.kafka-ui-srv.loadBalancer.servers]]
+        url = "http://kafka-ui:8080"
     [http.services.jenkins-srv]
       [[http.services.jenkins-srv.loadBalancer.servers]]
         url = "http://jenkins:8080"

@@ -1,6 +1,6 @@
 version: "3.8"
 networks:
-  alsinet:
+  default:
     external: true
 services:
   minio:
@@ -16,4 +16,4 @@ services:
       - "9001:9001"
     command: server --console-address ":9001" /data
     networks:
-      - alsinet
+      - ${MYNET}

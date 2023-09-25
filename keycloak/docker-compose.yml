@@ -1,6 +1,7 @@
 version: "3.8"
 networks:
-  alsinet:
+  default:
+    name: ${MYNET}
     external: true
 services:
   keycloak:
@@ -21,4 +22,4 @@ services:
     # labels:
     #   - "traefik.enable=false"
     networks:
-      - "${MYNET}"
+      - default

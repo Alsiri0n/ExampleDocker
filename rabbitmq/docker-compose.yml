@@ -1,6 +1,7 @@
 version: "3.8"
 networks:
-  alsinet:
+  default:
+    name: ${MYNET}
     external: true
 services:
   rabbitmq:
@@ -17,4 +18,4 @@ services:
       - ./app/config.conf:/etc/rabbitmq/conf.d/11-main.conf
     restart: unless-stopped
     networks:
-      - alsinet
+      - default

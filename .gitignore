@@ -1,7 +1,11 @@
+dock
 *.env
+*.rdb
+*.log
 data/
 !/traefik/data/conf/
 /traefik/acme.json
 /jenkins/jenkins-agent
 /jenkins/jenkins-agent.pub
+/rabbitmq/app/config.conf
 /nginx/

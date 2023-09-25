@@ -1,0 +1,20 @@
+version: "3.8"
+networks:
+  alsinet:
+    external: true
+services:
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - ./app/data:/var/lib/rabbitmq/
+      - ./app/log:/var/log/rabbitmq
+        #- ./app/config.conf:/data/configuration/rabbitmq.conf
+        #- ./app/config.conf:/opt/rabbitmq/etc/rabbitmq/rabbitmq.conf
+      - ./app/config.conf:/etc/rabbitmq/conf.d/11-main.conf
+    restart: unless-stopped
+    networks:
+      - alsinet

@@ -2,8 +2,7 @@ version: "3.8"
 networks:
   alsinet:
     external: true
-  # local:
-  #   external: false
+
 services:
   jenkins:
     image: jenkins/jenkins 
@@ -22,8 +21,7 @@ services:
     labels:
       - "traefik.enable=true"
     networks:
-      - alsinet
-      # - local
+      - ${MYNET}
     extra_hosts:
       - ${GITEA_HOST}
 

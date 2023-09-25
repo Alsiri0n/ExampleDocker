@@ -2,6 +2,7 @@ version: "3.8"
 networks:
   alsinet:
     external: true
+
 services:
   gitea:
     image: gitea/gitea:latest
@@ -24,4 +25,4 @@ services:
     labels:
       - "traefik.enable=true"
     networks:
-      - alsinet
+      - ${MYNET}

@@ -1,20 +1,24 @@
 version: "3.8"
 networks:
-  alsinet:
+  default:
+    name: ${MYNET}
     external: true
+
 services:
   zookeeper:
     restart: unless-stopped
-    image: docker.io/bitnami/zookeeper:3.8
+    # image: docker.io/bitnami/zookeeper:latest
+    image: zookeeper:latest
     container_name: zookeeper
     ports:
       - 2181:2181
-    volumes:
-      - ./zookeeper_data:/bitnami
-    environment:
-      - ALLOW_ANONYMOUS_LOGIN=yes
+    # for bitnami
+    # volumes:
+    #   - ./zookeeper_data:/bitnami
+    # environment:
+    #   - ALLOW_ANONYMOUS_LOGIN=yes
     networks:
-      - "${MYNET}"
+      - default
 
   kafka:
     image: bitnami/kafka:3.5
@@ -34,11 +38,11 @@ services:
       - KAFKA_CFG_ADVERTISED_LISTENERS=CLIENT://kafka:9092,EXTERNAL://kafka:19092
       - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CLIENT:PLAINTEXT,EXTERNAL:PLAINTEXT
       - KAFKA_INTER_BROKER_LISTENER_NAME=CLIENT
-      - TZ=Europe/Istanbul
+      - TZ=${TIMEZONE}
     depends_on:
       - zookeeper
     networks:
-      - "${MYNET}"
+      - default
 
   kafka-ui:
     restart: unless-stopped
@@ -53,4 +57,4 @@ services:
     depends_on:
       - kafka
     networks:
-      - "${MYNET}"
+      - default

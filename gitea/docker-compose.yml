@@ -1,6 +1,7 @@
 version: "3.8"
 networks:
-  alsinet:
+  default:
+    name: ${MYNET}
     external: true
 
 services:
@@ -16,7 +17,7 @@ services:
       - DB_NAME=${DB_NAME}
       - DB_USER=${USER_NAME}
       - DB_PASSWD=${PASSWORD}
-      - TZ=${TINEZONE}
+      - TZ=${TIMEZONE}
     volumes:
       - ./data:/data
     ports:
@@ -25,4 +26,4 @@ services:
     labels:
       - "traefik.enable=true"
     networks:
-      - ${MYNET}
+      - default

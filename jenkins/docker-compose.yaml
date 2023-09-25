@@ -1,6 +1,7 @@
 version: "3.8"
 networks:
-  alsinet:
+  default:
+    name: ${MYNET}
     external: true
 
 services:
@@ -21,7 +22,7 @@ services:
     labels:
       - "traefik.enable=true"
     networks:
-      - ${MYNET}
+      - default
     extra_hosts:
       - ${GITEA_HOST}
 

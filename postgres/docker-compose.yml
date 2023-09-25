@@ -1,7 +1,9 @@
 version: "3.8"
 networks:
-  alsinet:
+  default:
+    name: ${MYNET}
     external: true
+
 services:
   postgres:
     image: postgres:latest
@@ -19,4 +21,4 @@ services:
     # labels:
     #   - "traefik.enable=false"
     networks:
-      - "${MYNET}"
+      - default

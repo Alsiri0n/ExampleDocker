@@ -18,4 +18,4 @@ services:
     # labels:
     #   - "traefik.enable=false"
     networks:
-      - alsinet
+      - "${MYNET}"

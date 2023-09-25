@@ -16,11 +16,9 @@ services:
       - KEYCLOAK_DATABASE_NAME=${KEYCLOAK_DATABASE_NAME}
       - KEYCLOAK_DATABASE_USER=${KEYCLOAK_DATABASE_USER}
       - KEYCLOAK_DATABASE_PASSWORD=${KEYCLOAK_DATABASE_PASSWORD}
-        #volumes:
-        #      - ./
     ports:
       - "8082:8080"
     # labels:
     #   - "traefik.enable=false"
     networks:
-      - alsinet
+      - "${MYNET}"

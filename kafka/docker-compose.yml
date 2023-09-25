@@ -14,7 +14,8 @@ services:
     environment:
       - ALLOW_ANONYMOUS_LOGIN=yes
     networks:
-      - alsinet        
+      - "${MYNET}"
+
   kafka:
     image: bitnami/kafka:3.5
     restart: unless-stopped
@@ -24,8 +25,6 @@ services:
     ports:
       - 9092:9092
       - 19092:19092
-        #expose:
-        #      - 9093
     environment:
       - ALLOW_PLAINTEXT_LISTENER=yes
       - KAFKA_ENABLE_KRAFT=no
@@ -37,9 +36,10 @@ services:
       - KAFKA_INTER_BROKER_LISTENER_NAME=CLIENT
       - TZ=Europe/Istanbul
     depends_on:
-      - zookeeper    
+      - zookeeper
     networks:
-      - alsinet
+      - "${MYNET}"
+
   kafka-ui:
     restart: unless-stopped
     image: provectuslabs/kafka-ui:latest
@@ -53,4 +53,4 @@ services:
     depends_on:
       - kafka
     networks:
-      - alsinet
+      - "${MYNET}"

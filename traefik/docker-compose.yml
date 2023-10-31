@@ -14,7 +14,7 @@ services:
       - TRAEFIKHOSTNAME
       - GITEAHOSTNAME
       - JENKINSHOSTNAME
-      - KAFKA-UIHOSTNAME
+      - KAFKA_UIHOSTNAME
       - CERTNAME
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:rw

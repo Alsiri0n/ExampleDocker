@@ -21,12 +21,12 @@
           main = '{{ env "CERTNAME"}}'
     [http.routers.kafka-ui]
       entryPoints = ['web']
-      rule = 'Host(`{{ env "KAFKA-UIHOSTNAME"}}`)'
+      rule = 'Host(`{{ env "KAFKA_UIHOSTNAME"}}`)'
       middlewares = ['kafka-ui-https-redirect']
       service = "kafka-ui-srv"
     [http.routers.kafka-ui-secure]
       entryPoints = ['websecure']
-      rule = 'Host(`{{ env "KAFKA-UIHOSTNAME"}}`)'
+      rule = 'Host(`{{ env "KAFKA_UIHOSTNAME"}}`)'
       service = "kafka-ui-srv"
       [http.routers.kafka-ui-secure.tls]
         certResolver = "default"

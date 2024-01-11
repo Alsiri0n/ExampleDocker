@@ -9,7 +9,7 @@ services:
     restart: unless-stopped
     container_name: minio
     volumes:
-      - ./data:/data
+      - ./data:/data:Z
     env_file:
       - .env
     ports:

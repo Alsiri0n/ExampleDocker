@@ -17,7 +17,7 @@ services:
       - KAFKA_UIHOSTNAME
       - CERTNAME
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:rw
+      - /var/run/podman.sock:/var/run/docker.sock:rw
       - ./data:/home/traefik/
       - /etc/localtime:/etc/localtime:ro
       - ./static-conf.toml:/traefik.toml

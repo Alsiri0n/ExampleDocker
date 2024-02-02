@@ -19,6 +19,19 @@
         certResolver = "default"
         [[http.routers.gitea-secure.tls.domains]]
           main = '{{ env "CERTNAME"}}'
+    [http.routers.kibana]
+      entryPoints = ['web']
+      rule = 'Host(`{{ env "KIBANAHOSTNAME"}}`)'
+      middlewares = ['kibana-https-redirect']
+      service = "kibana-srv"
+    [http.routers.kibana-secure]
+      entryPoints = ['websecure']
+      rule = 'Host(`{{ env "KIBANAHOSTNAME"}}`)'
+      service = "kibana-srv"
+      [http.routers.kibana-secure.tls]
+        certResolver = "default"
+        [[http.routers.kibana-secure.tls.domains]]
+          main = '{{ env "CERTNAME"}}'
     [http.routers.kafka-ui]
       entryPoints = ['web']
       rule = 'Host(`{{ env "KAFKA_UIHOSTNAME"}}`)'
@@ -52,6 +65,9 @@
     [http.middlewares.gitea-https-redirect.redirectScheme]
       scheme = "https"
       permanent = true
+    [http.middlewares.kibana-https-redirect.redirectScheme]
+      scheme = "https"
+      permanent = true
     [http.middlewares.kafka-ui-https-redirect.redirectScheme]
       scheme = "https"
       permanent = true
@@ -62,6 +78,9 @@
     [http.services.gitea-srv]
       [[http.services.gitea-srv.loadBalancer.servers]]
         url = "http://gitea:3000"
+    [http.services.kibana-srv]
+      [[http.services.kibana-srv.loadBalancer.servers]]
+        url = "http://kibana:5601"
     [http.services.kafka-ui-srv]
       [[http.services.kafka-ui-srv.loadBalancer.servers]]
         url = "http://kafka-ui:8080"

@@ -36,3 +36,5 @@ services:
       - "traefik.enable=true"
     networks:
       - default
+    depends:
+      - elasticsearch

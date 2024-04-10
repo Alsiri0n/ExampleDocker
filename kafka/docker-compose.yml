@@ -21,7 +21,7 @@ services:
       - default
 
   kafka:
-    image: bitnami/kafka:3.5
+    image: bitnami/kafka:${TAG}
     restart: unless-stopped
     container_name: kafka
     volumes:
@@ -35,7 +35,7 @@ services:
       # - BITNAMI_DEBUG=yes
       - KAFKA_LOG4J_ROOT_LOGLEVEL=TRACE
       - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
-      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
+      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=false
       - KAFKA_CFG_LISTENERS=CLIENT://:9092,EXTERNAL://kafka:19092
       - KAFKA_CFG_ADVERTISED_LISTENERS=CLIENT://kafka:9092,EXTERNAL://kafka.local:19092
       - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CLIENT:PLAINTEXT,EXTERNAL:PLAINTEXT

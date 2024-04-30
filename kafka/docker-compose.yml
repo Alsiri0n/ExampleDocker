@@ -10,9 +10,9 @@ services:
     container_name: zookeeper
     ports:
       - 2181:2181
-    # for bitnami
-    # volumes:
-    #   - ./zookeeper_data:/bitnami
+    volumes:
+      - ./zookeeper/data:/data
+      - ./zookeeper/data_log:/datalog
     # environment:
     #   - ALLOW_ANONYMOUS_LOGIN=yes
     networks:
@@ -22,8 +22,8 @@ services:
     image: bitnami/kafka:${TAG}
     restart: unless-stopped
     container_name: kafka
-    volumes:
-      - ./data:/data
+    # volumes:
+    #   - ./kafka/data:/data
     ports:
       - 9092:9092
       - 19092:19092

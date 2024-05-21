@@ -6,12 +6,12 @@ networks:
 services:
   zookeeper:
     restart: unless-stopped
-    image: zookeeper:latest
+    image: zookeeper:${ZOOKEEPER_TAG}
     container_name: zookeeper
     ports:
       - 2181:2181
     volumes:
-      - ./zookeeper/data:/data
+#      - ./zookeeper/data:/data
       - ./zookeeper/data_log:/datalog
     # environment:
     #   - ALLOW_ANONYMOUS_LOGIN=yes
@@ -19,7 +19,7 @@ services:
       - default
 
   kafka:
-    image: bitnami/kafka:${TAG}
+    image: bitnami/kafka:${KAFKA_TAG}
     restart: unless-stopped
     container_name: kafka
     # volumes:

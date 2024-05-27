@@ -18,7 +18,6 @@ services:
       - CERTNAME=${CERTNAME}
     volumes:
       - /run/user/${DOCKER_USER_ID}/podman/podman.sock:/var/run/docker.sock:z
-      - /var/run/podman.sock:/var/run/docker.sock:rw
       - ./data:/home/traefik/
       - /etc/localtime:/etc/localtime:ro
       - ./static-conf.toml:/traefik.toml

@@ -1,4 +1,3 @@
-version: "3.8"
 networks:
   default:
     name: ${MYNET}
@@ -11,11 +10,12 @@ services:
     restart: always
     environment:
       - TZ=${TIMEZONE}
-      - TRAEFIKHOSTNAME
-      - GITEAHOSTNAME
-      - JENKINSHOSTNAME
-      - KAFKA_UIHOSTNAME
-      - CERTNAME
+      - TRAEFIKHOSTNAME=${TRAEFIKHOSTNAME}
+      - GITEAHOSTNAME=${GITEAHOSTNAME}
+      - JENKINSHOSTNAME=${JENKINSHOSTNAME}
+      - KAFKA_UIHOSTNAME=${KAFKA_UIHOSTNAME}
+      - KIBANAHOSTNAME=${KIBANAHOSTNAME}
+      - CERTNAME=${CERTNAME}
     volumes:
       - /var/run/podman.sock:/var/run/docker.sock:rw
       - ./data:/home/traefik/
@@ -23,8 +23,8 @@ services:
       - ./static-conf.toml:/traefik.toml
       - ./acme.json:/acme.json
     ports:
-      - "80:80"
-      - "443:443"
+      - 80:80
+      - 443:443
     labels:
       - "traefik.enable=true"
     networks:

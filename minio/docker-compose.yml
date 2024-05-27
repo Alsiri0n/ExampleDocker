@@ -1,11 +1,10 @@
-version: "3.8"
 networks:
   default:
     name: ${MYNET}
     external: true
 services:
   minio:
-    image: minio/minio
+    image: minio/minio:latest
     restart: unless-stopped
     container_name: minio
     volumes:

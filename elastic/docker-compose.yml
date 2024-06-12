@@ -5,7 +5,7 @@ networks:
 
 services:
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.12.0
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.14.0
     restart: unless-stopped
     container_name: elasticsearch
     environment: ['CLI_JAVA_OPTS=-Xms2g -Xmx2g','bootstrap.memory_lock=true','discovery.type=single-node','xpack.security.enabled=false', 'xpack.security.enrollment.enabled=false']
@@ -24,7 +24,7 @@ services:
         hard: 65536
 
   kibana:
-    image: docker.elastic.co/kibana/kibana:8.13.0
+    image: docker.elastic.co/kibana/kibana:8.14.0
     container_name: kibana
     environment:
       SERVER_NAME: ${SERVERNAME}

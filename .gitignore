@@ -2,8 +2,9 @@ dock
 *.env
 *.rdb
 *.log
+credentials
 data/
-!/traefik/data/conf/
+!/traefik/data/
 /traefik/acme.json
 /jenkins/jenkins-agent
 /jenkins/jenkins-agent.pub

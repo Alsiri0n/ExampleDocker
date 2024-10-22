@@ -1,0 +1,22 @@
+networks:
+  default:
+    name: ${MYNET}
+    external: true
+
+services:
+  arangodb:
+    container_name: arangodb
+    image: arangodb:3.11.5
+    environment:
+      ARANGO_ROOT_PASSWORD: "${ARANGO_ROOT_PASSWORD:?}"
+      TZ: TIMEZONE
+    ports:
+      - 8529:8529
+    restart: unless-stopped
+    volumes:
+      - ./data:/var/lib/arangodb3
+      - ./app-data:/var/lib/arangodb3-apps
+    networks:
+      - default
+    labels:
+      - "traefik.enable=true"

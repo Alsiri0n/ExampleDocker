@@ -9,13 +9,14 @@ services:
     container_name: traefik
     restart: unless-stopped
     environment:
-      - TZ=${TIMEZONE}
-      - TRAEFIKHOSTNAME=${TRAEFIKHOSTNAME}
-      - GITEAHOSTNAME=${GITEAHOSTNAME}
-      - JENKINSHOSTNAME=${JENKINSHOSTNAME}
-      - KAFKA_UIHOSTNAME=${KAFKA_UIHOSTNAME}
-      - KIBANAHOSTNAME=${KIBANAHOSTNAME}
-      - CERTNAME=${CERTNAME}
+      TZ: ${TIMEZONE}
+      TRAEFIKHOSTNAME: ${TRAEFIKHOSTNAME}
+      GITEAHOSTNAME: ${GITEAHOSTNAME}
+      JENKINSHOSTNAME: ${JENKINSHOSTNAME}
+      KAFKA_UIHOSTNAME: ${KAFKA_UIHOSTNAME}
+      KIBANAHOSTNAME: ${KIBANAHOSTNAME}
+      ARANGOHOSTNAME: ${ARANGOHOSTNAME}
+      CERTNAME: ${CERTNAME}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:rw
       - ./data:/home/traefik/

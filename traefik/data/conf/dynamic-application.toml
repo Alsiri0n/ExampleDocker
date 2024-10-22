@@ -32,6 +32,19 @@
         certResolver = "default"
         [[http.routers.kibana-secure.tls.domains]]
           main = '{{ env "CERTNAME"}}'
+    [http.routers.arango]
+      entryPoints = ['web']
+      rule = 'Host(`{{ env "ARANGOHOSTNAME"}}`)'
+      middlewares = ['arango-https-redirect']
+      service = "arango-srv"
+    [http.routers.arango-secure]
+      entryPoints = ['websecure']
+      rule = 'Host(`{{ env "ARANGOHOSTNAME"}}`)'
+      service = "arango-srv"
+      [http.routers.arango-secure.tls]
+        certResolver = "default"
+        [[http.routers.arango-secure.tls.domains]]
+          main = '{{ env "CERTNAME"}}'
     [http.routers.kafka-ui]
       entryPoints = ['web']
       rule = 'Host(`{{ env "KAFKA_UIHOSTNAME"}}`)'
@@ -74,6 +87,9 @@
     [http.middlewares.jenkins-https-redirect.redirectScheme]
       scheme = "https"
       permanent = true
+    [http.middlewares.arango-https-redirect.redirectScheme]
+      scheme = "https"
+      permanent = true
   [http.services]
     [http.services.gitea-srv]
       [[http.services.gitea-srv.loadBalancer.servers]]
@@ -87,3 +103,6 @@
     [http.services.jenkins-srv]
       [[http.services.jenkins-srv.loadBalancer.servers]]
         url = "http://jenkins:8080"
+    [http.services.arango-srv]
+      [[http.services.arango-srv.loadBalancer.servers]]
+        url = "http://arangodb:8529"

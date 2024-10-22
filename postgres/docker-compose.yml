@@ -9,10 +9,10 @@ services:
     container_name: postgres
     restart: unless-stopped
     environment:
-      - POSTGRES_USER=${USER_NAME}
-      - POSTGRES_PASSWORD=${PASSWORD}
-      - POSTGRES_DB=${DB_NAME}
-      - TZ=${TIMEZONE}
+      POSTGRES_USER: ${USER_NAME:?}
+      POSTGRES_PASSWORD: ${PASSWORD:?}
+      POSTGRES_DB: ${DB_NAME:?}
+      TZ: ${TIMEZONE:?}
     volumes:
       - ./data:/var/lib/postgresql/data
     ports:

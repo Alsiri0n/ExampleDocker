@@ -16,7 +16,7 @@
       rule = 'Host(`{{ env "GITEAHOSTNAME"}}`)'
       service = "gitea-srv"
       [http.routers.gitea-secure.tls]
-        certResolver = "default"
+        certResolver = "letsencrypt"
         [[http.routers.gitea-secure.tls.domains]]
           main = '{{ env "CERTNAME"}}'
     [http.routers.kibana]
@@ -29,7 +29,7 @@
       rule = 'Host(`{{ env "KIBANAHOSTNAME"}}`)'
       service = "kibana-srv"
       [http.routers.kibana-secure.tls]
-        certResolver = "default"
+        certResolver = "letsencrypt"
         [[http.routers.kibana-secure.tls.domains]]
           main = '{{ env "CERTNAME"}}'
     [http.routers.arango]
@@ -42,7 +42,7 @@
       rule = 'Host(`{{ env "ARANGOHOSTNAME"}}`)'
       service = "arango-srv"
       [http.routers.arango-secure.tls]
-        certResolver = "default"
+        certResolver = "letsencrypt"
         [[http.routers.arango-secure.tls.domains]]
           main = '{{ env "CERTNAME"}}'
     [http.routers.kafka-ui]
@@ -55,7 +55,7 @@
       rule = 'Host(`{{ env "KAFKA_UIHOSTNAME"}}`)'
       service = "kafka-ui-srv"
       [http.routers.kafka-ui-secure.tls]
-        certResolver = "default"
+        certResolver = "letsencrypt"
         [[http.routers.kafka-ui-secure.tls.domains]]
           main = '{{ env "CERTNAME"}}'
     [http.routers.jenkins]
@@ -68,7 +68,7 @@
        rule = 'Host(`{{ env "JENKINSHOSTNAME"}}`)'
        service = "jenkins-srv"
        [http.routers.jenkins-secure.tls]
-         certResolver = "default"
+         certResolver = "letsencrypt"
          [[http.routers.jenkins-secure.tls.domains]]
            main = '{{ env "CERTNAME"}}'
   [http.middlewares]

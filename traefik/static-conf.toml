@@ -36,16 +36,25 @@
             "StartUTC" = "drop"
 
 [certificatesResolvers]
-  [certificatesResolvers.default]
-      [certificatesResolvers.default.acme]
-            email = "invisible_blade@bk.ru"
+    # [certificatesResolvers.default]
+    #     [certificatesResolvers.default.acme]
+    #         email = "invisible_blade@bk.ru"
+    #         storage = "acme.json"
+    #         caServer = "https://acme-v02.api.letsencrypt.org/directory"
+    #         #caServer = "https://acme-staging-v02.api.letsencrypt.org/directory"
+    #         [certificatesResolvers.default.acme.dnsChallenge]
+    #             resolvers = ["1.1.1.1:53","8.8.8.8:53"]
+    #             provider = "manual"
+    #             delayBeforeCheck = "10s"
+    [certificatesResolvers.letsencrypt]
+        [certificatesResolvers.letsencrypt.acme]
             storage = "acme.json"
             caServer = "https://acme-v02.api.letsencrypt.org/directory"
             #caServer = "https://acme-staging-v02.api.letsencrypt.org/directory"
-            [certificatesResolvers.default.acme.dnsChallenge]
-                resolvers = ["1.1.1.1:53","8.8.8.8:53"]
-                provider = "manual"
-                delayBeforeCheck = "10s"
+            [certificatesResolvers.letsencrypt.acme.dnsChallenge]
+                provider = "cloudflare"
+                delayBeforeCheck = 10
+
 
 [docker]
     endpoint = "unix:///var/run/docker.sock"

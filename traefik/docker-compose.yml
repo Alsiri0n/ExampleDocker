@@ -1,6 +1,6 @@
 networks:
   default:
-    name: ${MYNET}
+    name: ${MYNET:?}
     external: true
 
 services:

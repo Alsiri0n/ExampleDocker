@@ -1,7 +1,6 @@
-version: "3.8"
 networks:
   default:
-    name: ${MYNET}
+    name: ${MYNET:?}
     external: true
 services:
   rabbitmq:

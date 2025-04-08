@@ -2,8 +2,10 @@ auth:
   type: DISABLED
 kafka:
   clusters:
-  - bootstrapServers: kafka:9092
+  - 
     name: test
+    bootstrapServers: kafka:9092
+    schemaRegistry: http://schema-registry:8081
     properties: {}
     readOnly: false
 rbac:

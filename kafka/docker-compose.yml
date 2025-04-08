@@ -22,8 +22,8 @@ services:
     image: bitnami/kafka:${KAFKA_TAG:?}
     restart: unless-stopped
     container_name: kafka
-    # volumes:
-    #   - ./kafka/data:/data
+    volumes:
+      - ./kafka/data:/bitnami/kafka
     ports:
       - 9092:9092
       - 19092:19092
@@ -39,13 +39,55 @@ services:
       # - KAFKA_CFG_ADVERTISED_LISTENERS=CLIENT://kafka:9092,EXTERNAL://kafka:19092
       - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CLIENT:PLAINTEXT,EXTERNAL:PLAINTEXT
       - KAFKA_INTER_BROKER_LISTENER_NAME=CLIENT
+
+      #  SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: "PLAINTEXT://kafka:9090"
       - TZ=${TIMEZONE}
     depends_on:
       - zookeeper
     networks:
       - default
 
-  kafka-ui:
+  # schema registry for confluent
+  # schema-registry:
+  #   image: confluentinc/cp-schema-registry:${SCHEMA_REGISTRY_TAG:?}
+  #   hostname: schema-registry
+  #   container_name: schema-registry
+  #   depends_on:
+  #     # - kafka
+  #     - zookeeper
+  #   ports:
+  #     - 18081:8081
+  #   environment:
+  #     SCHEMA_REGISTRY_HOST_NAME: schema-registry
+  #     SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: "zookeeper:2181"
+  #     # SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: kafka:19092
+  #     SCHEMA_REGISTRY_LOG4J_ROOT_LOGLEVEL: WARN
+  #     SCHEMA_REGISTRY_LISTENERS: "http://0.0.0.0:8081"
+
+  schema-registry:
+    image: bitnami/schema-registry:${SCHEMA_REGISTRY_TAG:?}
+    hostname: schema-registry
+    container_name: schema-registry
+    restart: unless-stopped
+    ports:
+      - 18081:8081
+      # - 18082:8082
+    depends_on:
+      - kafka
+    environment:
+      - SCHEMA_REGISTRY_KAFKA_BROKERS=PLAINTEXT://kafka:9092
+      - SCHEMA_REGISTRY_HOST_NAME=schema-registry
+      # - SCHEMA_REGISTRY_LISTENERS=http://0.0.0.0:8081,https://0.0.0.0:8082
+      - SCHEMA_REGISTRY_LISTENERS=http://0.0.0.0:8081
+      # - SCHEMA_REGISTRY_SSL_KEYSTORE_PASSWORD=keystore
+      # - SCHEMA_REGISTRY_SSL_TRUSTSTORE_PASSWORD=keystore
+      - SCHEMA_REGISTRY_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM=none
+      - SCHEMA_REGISTRY_CLIENT_AUTHENTICATION=REQUESTED
+    # volumes:
+    #   - ./keystore.jks:/opt/bitnami/schema-registry/certs/keystore.jks:ro
+    #   - ./truststore.jks:/opt/bitnami/schema-registry/certs/truststore.jks:ro
+
+  kafbat-ui:
     restart: unless-stopped
     image: ghcr.io/kafbat/kafka-ui:latest
     container_name: kafbat_ui
@@ -57,6 +99,7 @@ services:
       - ./kui/config.yml:/etc/kafkaui/dynamic_config.yaml
     depends_on:
       - kafka
+      - schema-registry
     labels:
       - "traefik.enable=true"
     networks:

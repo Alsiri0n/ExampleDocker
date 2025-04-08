@@ -47,8 +47,8 @@ services:
 
   kafka-ui:
     restart: unless-stopped
-    image: provectuslabs/kafka-ui:latest
-    container_name: kafka_ui
+    image: ghcr.io/kafbat/kafka-ui:latest
+    container_name: kafbat_ui
     ports:
       - 8081:8080
     environment:

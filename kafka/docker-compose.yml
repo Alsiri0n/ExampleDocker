@@ -97,6 +97,7 @@ services:
       - ./kui/config.yml:/etc/kafkaui/dynamic_config.yaml
     depends_on:
       - kafka
+      - schema-registry
     labels:
       - "traefik.enable=true"
     networks:

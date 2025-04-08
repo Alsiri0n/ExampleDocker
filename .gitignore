@@ -5,7 +5,7 @@ dock
 credentials
 data/
 !/traefik/data/
-!.env.example
+!*.env.example
 /traefik/acme.json
 /jenkins/jenkins-agent
 /jenkins/jenkins-agent.pub

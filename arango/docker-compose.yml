@@ -6,7 +6,7 @@ networks:
 services:
   arangodb:
     container_name: arangodb
-    image: arangodb:3.11.5
+    image: arangodb:${ARANGO_TAG:?}
     environment:
       ARANGO_ROOT_PASSWORD: "${ARANGO_ROOT_PASSWORD:?}"
       TZ: TIMEZONE

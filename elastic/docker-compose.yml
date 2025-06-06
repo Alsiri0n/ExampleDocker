@@ -24,7 +24,7 @@ services:
         hard: 65536
 
   kibana:
-    image: docker.elastic.co/kibana/kibana:${ARANGO_TAG:?}
+    image: docker.elastic.co/kibana/kibana:${ELASTIC_TAG:?}
     container_name: kibana
     environment:
       SERVER_NAME: ${SERVERNAME}

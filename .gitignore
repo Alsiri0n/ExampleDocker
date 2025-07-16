@@ -11,4 +11,5 @@ data/
 /jenkins/jenkins-agent.pub
 /rabbitmq/app/config.conf
 /nginx/
-/zookeper/
+/kafka/zookeper/
+/kafka/kafka_data/

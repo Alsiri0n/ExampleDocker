@@ -12,4 +12,3 @@ data/
 /rabbitmq/app/config.conf
 /nginx/
 /kafka/zookeeper/
-/kafka/kafka_data/

@@ -23,7 +23,7 @@ services:
     restart: unless-stopped
     container_name: kafka
     volumes:
-      - ./kafka_data/data:/bitnami/kafka
+      - ./data/data:/bitnami/kafka
     ports:
       - 9092:9092
       - 19092:19092

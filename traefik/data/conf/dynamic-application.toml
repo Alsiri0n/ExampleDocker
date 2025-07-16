@@ -99,7 +99,7 @@
         url = "http://kibana:5601"
     [http.services.kafka-ui-srv]
       [[http.services.kafka-ui-srv.loadBalancer.servers]]
-        url = "http://kafka-ui:8080"
+        url = "http://kafbat-ui:8080"
     [http.services.jenkins-srv]
       [[http.services.jenkins-srv.loadBalancer.servers]]
         url = "http://jenkins:8080"

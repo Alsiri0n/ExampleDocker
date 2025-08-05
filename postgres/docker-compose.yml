@@ -18,7 +18,7 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
     ports:
-      - 5432:5432
+      - 0.0.0.0:5432:5432
     # labels:
     #   - "traefik.enable=false"
     networks:

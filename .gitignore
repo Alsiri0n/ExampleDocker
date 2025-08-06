@@ -12,3 +12,5 @@ data/
 /rabbitmq/app/config.conf
 /nginx/
 /kafka/zookeeper/
+*.rego
+permissions_and_rules.json

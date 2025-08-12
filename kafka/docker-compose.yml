@@ -6,7 +6,7 @@ networks:
 services:
   zookeeper:
     restart: unless-stopped
-    image: zookeeper:${ZOOKEEPER_TAG:?}
+    image: zookeeper${ZOOKEEPER_TAG:?}
     container_name: zookeeper
     ports:
       - 2181:2181
@@ -19,7 +19,7 @@ services:
       - default
 
   kafka:
-    image: bitnami/kafka:${KAFKA_TAG:?}
+    image: bitnami/kafka${KAFKA_TAG:?}
     restart: unless-stopped
     container_name: kafka
     volumes:
@@ -63,7 +63,7 @@ services:
   #     SCHEMA_REGISTRY_LISTENERS: "http://0.0.0.0:8081"
 
   schema-registry:
-    image: bitnami/schema-registry:${SCHEMA_REGISTRY_TAG:?}
+    image: bitnami/schema-registry${SCHEMA_REGISTRY_TAG:?}
     hostname: schema-registry
     container_name: schema-registry
     restart: unless-stopped

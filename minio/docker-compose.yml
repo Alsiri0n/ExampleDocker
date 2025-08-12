@@ -5,7 +5,7 @@ networks:
 services:
   minio:
     container_name: minio
-    image: minio/minio:latest
+    image: minio/minio${:MINIO_TAG:?}
     restart: unless-stopped
     volumes:
       - ./data:/data

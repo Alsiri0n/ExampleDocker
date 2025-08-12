@@ -1,11 +1,11 @@
-version: "3.8"
 networks:
   default:
     name: ${MYNET:?}
     external: true
+
 services:
   keycloak:
-    image: bitnami/keycloak:latest
+    image: bitnami/keycloak:${KEYCLOAK_TAG:?}
     container_name: keycloak
     restart: unless-stopped
     environment:
@@ -18,8 +18,8 @@ services:
       - KEYCLOAK_DATABASE_USER=${KEYCLOAK_DATABASE_USER}
       - KEYCLOAK_DATABASE_PASSWORD=${KEYCLOAK_DATABASE_PASSWORD}
     ports:
-      - "8082:8080"
-    # labels:
-    #   - "traefik.enable=false"
+      - 0.0.0.0:8080:8080
+    labels:
+      - "traefik.enable=false"
     networks:
       - default

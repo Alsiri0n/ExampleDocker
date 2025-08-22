@@ -81,8 +81,6 @@ services:
       # - SCHEMA_REGISTRY_SSL_TRUSTSTORE_PASSWORD=keystore
       SCHEMA_REGISTRY_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM: "none"
       SCHEMA_REGISTRY_CLIENT_AUTHENTICATION: "NONE"
-      SCHEMA_REGISTRY_CFG_DEBUG: "false"
-      SCHEMA_REGISTRY_CFG_SCHEMA_COMPATIBILITY_LEVEL: "none"
     # volumes:
     #   - ./keystore.jks:/opt/bitnami/schema-registry/certs/keystore.jks:ro
     #   - ./truststore.jks:/opt/bitnami/schema-registry/certs/truststore.jks:ro

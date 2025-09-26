@@ -1,20 +1,18 @@
-networks:
-  default:
-    name: ${MYNET:?}
-    external: true
+x-networks: &networks
+  networks:
+    - default
 
 services:
   postgres:
-    image: postgre${POSTGRES_TAG:?}
+    <<: *networks
+    image: postgres${SERVICE_TAG:?}
     container_name: postgres
     restart: unless-stopped
     environment:
-      POSTGRES_USER: ${USER_NAME:?}
-      POSTGRES_PASSWORD: ${PASSWORD:?}
-      POSTGRES_DB: ${DB_NAME:?}
+      POSTGRES_PASSWORD: ${DB_PASS:?}
       TZ: ${TIMEZONE:-UTC}
     volumes:
-      - ./data:/var/lib/postgresql/data
+      - ./data:/var/lib/postgresql
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
     ports:
@@ -23,3 +21,8 @@ services:
     #   - "traefik.enable=false"
     networks:
       - default
+
+networks:
+  default:
+    name: ${MYNET:?}
+    external: true

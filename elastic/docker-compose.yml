@@ -1,10 +1,10 @@
-networks:
-  default:
-    name: ${MYNET:?}
-    external: true
+x-networks: &networks
+  networks:
+    - default
 
 services:
   elasticsearch:
+    <<: *networks
     image: docker.elastic.co/elasticsearch/elasticsearch${ELASTIC_TAG:?}
     restart: unless-stopped
     container_name: elasticsearch
@@ -18,8 +18,6 @@ services:
       - ./data:/data
     ports:
       - 9200:9200
-    networks:
-      - default
     ulimits:
       memlock:
         soft: -1
@@ -29,7 +27,9 @@ services:
         hard: 65536
 
   kibana:
+    <<: *networks
     image: docker.elastic.co/kibana/kibana${ELASTIC_TAG:?}
+    restart: unless-stopped
     container_name: kibana
     environment:
       SERVER_NAME: ${SERVERNAME}
@@ -38,7 +38,10 @@ services:
       - 5601:5601
     labels:
       - "traefik.enable=true"
-    networks:
-      - default
     depends_on:
       - elasticsearch
+
+networks:
+  default:
+    name: ${MYNET:?}
+    external: true

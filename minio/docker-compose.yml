@@ -22,9 +22,6 @@ services:
     environment:
       - MINIO_ROOT_USER=${MINIO_ROOT_USER:?}
       - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD:?}
-      # - MINIO_BROWSER_REDIRECT_URL=https://minio.alsi.insalvo.xyz
-    labels:
-      - traefik.enable=true
 
 networks:
   default:

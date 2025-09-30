@@ -1,10 +1,10 @@
-networks:
-  default:
-    name: ${MYNET:?}
-    external: true
+x-networks: &networks
+  networks:
+    - default
 
 services:
   traefik:
+    <<: *networks
     image: traefik:latest
     container_name: traefik
     restart: unless-stopped
@@ -17,6 +17,7 @@ services:
       KIBANAHOSTNAME: ${KIBANAHOSTNAME:?}
       ARANGOHOSTNAME: ${ARANGOHOSTNAME:?}
       MONGOEXPRESSHOSTNAME: ${MONGOEXPRESSHOSTNAME:?}
+      MINIOHOSTNAME: ${MINIOHOSTNAME:?}
       CERTNAME: ${CERTNAME}
       CF_API_EMAIL: ${CF_API_EMAIL}
       CF_DNS_API_TOKEN: ${CF_DNS_API_TOKEN}
@@ -30,7 +31,8 @@ services:
     ports:
       # - 0.0.0.0:80:80
       - 0.0.0.0:443:443
-    labels:
-      - "traefik.enable=true"
-    networks:
-      - default
+
+networks:
+  default:
+    name: ${MYNET:?}
+    external: true

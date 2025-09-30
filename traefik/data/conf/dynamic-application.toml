@@ -19,6 +19,19 @@
         certResolver = "letsencrypt"
         [[http.routers.gitea-secure.tls.domains]]
           main = '{{ env "CERTNAME"}}'
+    [http.routers.minio]
+      entryPoints = ['web']
+      rule = 'Host(`{{ env "MINIOHOSTNAME"}}`)'
+      middlewares = ['minio-https-redirect']
+      service = "minio-srv"
+    [http.routers.minio-secure]
+      entryPoints = ['websecure']
+      rule = 'Host(`{{ env "MINIOHOSTNAME"}}`)'
+      service = "minio-srv"
+      [http.routers.minio-secure.tls]
+        certResolver = "letsencrypt"
+        [[http.routers.minio-secure.tls.domains]]
+          main = '{{ env "CERTNAME"}}'
     [http.routers.kibana]
       entryPoints = ['web']
       rule = 'Host(`{{ env "KIBANAHOSTNAME"}}`)'
@@ -78,6 +91,9 @@
     [http.middlewares.gitea-https-redirect.redirectScheme]
       scheme = "https"
       permanent = true
+    [http.middlewares.minio-https-redirect.redirectScheme]
+      scheme = "https"
+      permanent = true
     [http.middlewares.kibana-https-redirect.redirectScheme]
       scheme = "https"
       permanent = true
@@ -94,6 +110,9 @@
     [http.services.gitea-srv]
       [[http.services.gitea-srv.loadBalancer.servers]]
         url = "http://gitea:3000"
+    [http.services.minio-srv]
+      [[http.services.minio-srv.loadBalancer.servers]]
+        url = "http://minio:9001"
     [http.services.kibana-srv]
       [[http.services.kibana-srv.loadBalancer.servers]]
         url = "http://kibana:5601"

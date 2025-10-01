@@ -1,25 +1,43 @@
+x-networks: &networks
+  networks:
+    - default
+x-labels: &enable_traefik
+  labels:
+    - traefik.enable=true
+
+services:
+  keycloak:
+    <<: [*networks, *enable_traefik]
+    image: quay.io/keycloak/keycloak${KEYCLOAK_TAG:?}
+    container_name: keycloak
+    restart: unless-stopped
+    command: start
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: "${KC_BOOTSTRAP_ADMIN_USERNAME:?}"
+      KC_BOOTSTRAP_ADMIN_PASSWORD: "${KC_BOOTSTRAP_ADMIN_PASSWORD:?}"
+      KC_DB: "${KC_DB:?}"
+      KC_DB_USERNAME: "${KC_DB_USERNAME:?}"
+      KC_DB_PASSWORD: "${KC_DB_PASSWORD:?}"
+      KC_DB_URL: "${KC_DB_URL:?}"
+#      KC_HEALTH_ENABLED: "true"
+
+      KC_HTTP_ENABLED: true
+      KC_HOSTNAME_STRICT: false
+      KC_PROXY_HEADERS: "xforwarded"
+      PROXY_ADDRESS_FORWARDING: true
+
+    ports:
+      - 0.0.0.0:8080:8080
+
+#    healthcheck:
+#      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+#      interval: 1s
+#      timeout: 5s
+#      retries: 15
+#      start_period: 10s
+
+
 networks:
   default:
     name: ${MYNET:?}
     external: true
-
-services:
-  keycloak:
-    image: bitnami/keycloak:${KEYCLOAK_TAG:?}
-    container_name: keycloak
-    restart: unless-stopped
-    environment:
-      - KEYCLOAK_ADMIN_USER=${KEYCLOAK_ADMIN_USER}
-      - KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD}
-      - KEYCLOAK_DATABASE_VENDOR=${KEYCLOAK_DATABASE_VENDOR}
-      - KEYCLOAK_DATABASE_HOST=${KEYCLOAK_DATABASE_HOST}
-      - KEYCLOAK_DATABASE_PORT=${KEYCLOAK_DATABASE_PORT}
-      - KEYCLOAK_DATABASE_NAME=${KEYCLOAK_DATABASE_NAME}
-      - KEYCLOAK_DATABASE_USER=${KEYCLOAK_DATABASE_USER}
-      - KEYCLOAK_DATABASE_PASSWORD=${KEYCLOAK_DATABASE_PASSWORD}
-    ports:
-      - 0.0.0.0:8080:8080
-    labels:
-      - "traefik.enable=false"
-    networks:
-      - default

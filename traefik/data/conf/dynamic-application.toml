@@ -19,6 +19,19 @@
         certResolver = "letsencrypt"
         [[http.routers.gitea-secure.tls.domains]]
           main = '{{ env "CERTNAME"}}'
+    [http.routers.keycloak]
+      entryPoints = ['web']
+      rule = 'Host(`{{ env "KEYCLOAKHOSTNAME"}}`)'
+      middlewares = ['keycloak-https-redirect']
+      service = "keycloak-srv"
+    [http.routers.keycloak-secure]
+      entryPoints = ['websecure']
+      rule = 'Host(`{{ env "KEYCLOAKHOSTNAME"}}`)'
+      service = "keycloak-srv"
+      [http.routers.keycloak-secure.tls]
+        certResolver = "letsencrypt"
+        [[http.routers.keycloak-secure.tls.domains]]
+          main = '{{ env "CERTNAME"}}'
     [http.routers.minio]
       entryPoints = ['web']
       rule = 'Host(`{{ env "MINIOHOSTNAME"}}`)'
@@ -91,6 +104,9 @@
     [http.middlewares.gitea-https-redirect.redirectScheme]
       scheme = "https"
       permanent = true
+    [http.middlewares.keycloak-https-redirect.redirectScheme]
+      scheme = "https"
+      permanent = true
     [http.middlewares.minio-https-redirect.redirectScheme]
       scheme = "https"
       permanent = true
@@ -110,6 +126,9 @@
     [http.services.gitea-srv]
       [[http.services.gitea-srv.loadBalancer.servers]]
         url = "http://gitea:3000"
+    [http.services.keycloak-srv]
+      [[http.services.keycloak-srv.loadBalancer.servers]]
+        url = "http://keycloak:8080"
     [http.services.minio-srv]
       [[http.services.minio-srv.loadBalancer.servers]]
         url = "http://minio:9001"

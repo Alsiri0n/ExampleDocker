@@ -7,14 +7,12 @@ x-labels: &enable_traefik
 
 services:
   minio:
-    <<: [*networks, &enable_traefik]
+    <<: [*networks, *enable_traefik]
     container_name: minio
     image: minio/minio${MINIO_TAG:?}
     restart: unless-stopped
     volumes:
       - ./data:/data
-    env_file:
-      - .env
     ports:
       - 0.0.0.0:9000:9000
       - 0.0.0.0:9001:9001

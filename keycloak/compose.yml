@@ -13,18 +13,22 @@ services:
     restart: unless-stopped
     command: start
     environment:
+      # KC_LOG_LEVEL: DEBUG
+
       KC_BOOTSTRAP_ADMIN_USERNAME: "${KC_BOOTSTRAP_ADMIN_USERNAME:?}"
       KC_BOOTSTRAP_ADMIN_PASSWORD: "${KC_BOOTSTRAP_ADMIN_PASSWORD:?}"
       KC_DB: "${KC_DB:?}"
       KC_DB_USERNAME: "${KC_DB_USERNAME:?}"
       KC_DB_PASSWORD: "${KC_DB_PASSWORD:?}"
       KC_DB_URL: "${KC_DB_URL:?}"
-#      KC_HEALTH_ENABLED: "true"
+      # KC_HEALTH_ENABLED: "true"
 
       KC_HTTP_ENABLED: true
       KC_HOSTNAME_STRICT: false
       KC_PROXY_HEADERS: "xforwarded"
       PROXY_ADDRESS_FORWARDING: true
+
+      TZ: ${TIMEZONE:-UTC}
 
     ports:
       - 0.0.0.0:8080:8080

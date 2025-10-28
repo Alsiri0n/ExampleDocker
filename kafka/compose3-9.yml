@@ -1,0 +1,104 @@
+networks:
+  default:
+    name: ${MYNET:?}
+    external: true
+
+services:
+  zookeeper:
+    restart: unless-stopped
+    image: zookeeper${ZOOKEEPER_TAG:?}
+    container_name: zookeeper
+    ports:
+      - 2181:2181
+    volumes:
+      - ./zookeeper/data:/data
+      - ./zookeeper/data_log:/datalog
+    # environment:
+    #   - ALLOW_ANONYMOUS_LOGIN=yes
+    networks:
+      - default
+
+  kafka:
+    image: bitnami/kafka${KAFKA_TAG:?}
+    restart: unless-stopped
+    container_name: kafka
+    volumes:
+      - ./data/data:/bitnami/kafka
+    ports:
+      - 9092:9092
+      - 19092:19092
+    environment:
+      ALLOW_PLAINTEXT_LISTENER: "yes"
+      KAFKA_ENABLE_KRAFT: "no"
+      KAFKA_LOG4J_ROOT_LOGLEVEL: "TRACE"
+      KAFKA_CFG_ZOOKEEPER_CONNECT: "zookeeper:2181"
+      # Before prod start - we should auto create default topic
+      KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE: "false"
+      KAFKA_CFG_LISTENERS: "CLIENT://:9092,EXTERNAL://kafka:19092"
+      KAFKA_CFG_ADVERTISED_LISTENERS: "CLIENT://kafka:9092,EXTERNAL://kafka.lan:19092"
+      # - KAFKA_CFG_ADVERTISED_LISTENERS=CLIENT://kafka:9092,EXTERNAL://kafka:19092
+      KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: "CLIENT:PLAINTEXT,EXTERNAL:PLAINTEXT"
+      KAFKA_INTER_BROKER_LISTENER_NAME: "CLIENT"
+      TZ: ${TIMEZONE:-UTC}
+    depends_on:
+      - zookeeper
+    networks:
+      - default
+
+  # schema registry for confluent
+  # schema-registry:
+  #   image: confluentinc/cp-schema-registry:${SCHEMA_REGISTRY_TAG:?}
+  #   hostname: schema-registry
+  #   container_name: schema-registry
+  #   depends_on:
+  #     # - kafka
+  #     - zookeeper
+  #   ports:
+  #     - 18081:8081
+  #   environment:
+  #     SCHEMA_REGISTRY_HOST_NAME: schema-registry
+  #     SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: "zookeeper:2181"
+  #     # SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: kafka:19092
+  #     SCHEMA_REGISTRY_LOG4J_ROOT_LOGLEVEL: WARN
+  #     SCHEMA_REGISTRY_LISTENERS: "http://0.0.0.0:8081"
+
+#  schema-registry:
+#    image: bitnami/schema-registry${SCHEMA_REGISTRY_TAG:?}
+#    hostname: schema-registry
+#    container_name: schema-registry
+#    restart: unless-stopped
+#    ports:
+#      - 18081:8081
+#      # - 18082:8082
+#    depends_on:
+#      - kafka
+#    environment:
+#      SCHEMA_REGISTRY_KAFKA_BROKERS: "PLAINTEXT://kafka:9092"
+#      SCHEMA_REGISTRY_HOST_NAME: "schema-registry"
+#      # - SCHEMA_REGISTRY_LISTENERS=http://0.0.0.0:8081,https://0.0.0.0:8082
+#      SCHEMA_REGISTRY_LISTENERS: "http://0.0.0.0:8081"
+#      # - SCHEMA_REGISTRY_SSL_KEYSTORE_PASSWORD=keystore
+#      # - SCHEMA_REGISTRY_SSL_TRUSTSTORE_PASSWORD=keystore
+#      SCHEMA_REGISTRY_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM: "none"
+#      SCHEMA_REGISTRY_CLIENT_AUTHENTICATION: "NONE"
+    # volumes:
+    #   - ./keystore.jks:/opt/bitnami/schema-registry/certs/keystore.jks:ro
+    #   - ./truststore.jks:/opt/bitnami/schema-registry/certs/truststore.jks:ro
+
+  kafbat-ui:
+    restart: unless-stopped
+    image: ghcr.io/kafbat/kafka-ui:latest
+    container_name: kafbat-ui
+    ports:
+      - 8081:8080
+    environment:
+      - DYNAMIC_CONFIG_ENABLED=true
+    volumes:
+      - ./kui/config.yml:/etc/kafkaui/dynamic_config.yaml
+    depends_on:
+      - kafka
+#      - schema-registry
+    labels:
+      - "traefik.enable=true"
+    networks:
+      - default

@@ -2,9 +2,13 @@ x-networks: &networks
   networks:
     - default
 
+x-restart: &restart
+  restart: unless-stopped
+
+
 services:
   postgres:
-    <<: *networks
+    <<: [*networks, *restart]
     image: postgres${SERVICE_TAG:?}
     container_name: postgres
     ports:
@@ -12,7 +16,6 @@ services:
     environment:
       POSTGRES_PASSWORD: ${DB_PASS:?}
       TZ: ${TIMEZONE:-UTC}
-    restart: unless-stopped
     volumes:
       - ./data:/var/lib/postgresql
       - /etc/localtime:/etc/localtime:ro

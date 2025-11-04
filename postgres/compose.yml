@@ -7,16 +7,16 @@ services:
     <<: *networks
     image: postgres${SERVICE_TAG:?}
     container_name: postgres
-    restart: unless-stopped
+    ports:
+      - ${POSTGRESQL_PORT:-0.0.0.0:5432}:5432
     environment:
       POSTGRES_PASSWORD: ${DB_PASS:?}
       TZ: ${TIMEZONE:-UTC}
+    restart: unless-stopped
     volumes:
       - ./data:/var/lib/postgresql
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
-    ports:
-      - 0.0.0.0:5432:5432
 
 networks:
   default:

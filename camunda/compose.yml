@@ -6,52 +6,76 @@ x-labels: &enable_traefik
     - traefik.enable=true
 
 services:
+  # https://github.com/camunda/camunda-distributions/blob/main/docker-compose/versions/camunda-8.5/docker-compose.yaml
   zeebe:
     <<: *networks
     image: camunda/zeebe${ZEEBE_TAG:?}
     container_name: zeebe
+    ports:
+      # gRPC
+      - ${ZEEBE_GRPC_PORT:-26500}:5601
+      # monitoringApi
+      # - 9600:9600
+      # REST API
+      - ${ZEEBE_REST_API_PORT:-8088}:8080
+    environment:
+      JAVA_TOOL_OPTIONS: "-Xms512m -Xmx512m"
     restart: unless-stopped
     depends_on:
       - elasticsearch_cm
 
-    ports:
-      - "26500:26500"
-      - "9600:9600"
-      - "8088:8080"
-
   elasticsearch_cm:
     <<: *networks
-    image: docker.elastic.co/elasticsearch/elasticsearch${ELASTIC_TAG:?}
-    restart: unless-stopped
+    image: docker.elastic.co/elasticsearch/elasticsearch${STACK_VERSION:?}
     container_name: elasticsearch_cm
-    environment: 
-#     CLI_JAVA_OPTS: "-Xms2g -Xmx2g"
+    ports:
+      - ${ES_PORT:-9200}:9200
+    environment:
+      ES_JAVA_OPTS: "-Xms512m -Xmx512m"
       bootstrap.memory_lock: "true"
       discovery.type: "single-node"
       xpack.security.enabled: "false"
       xpack.security.enrollment.enabled: "false"
     volumes:
       - ./data:/data
-    ports:
-      - 9201:9200
+    restart: unless-stopped
     ulimits:
       memlock:
         soft: -1
         hard: -1
-#      nofile:
-#        soft: 65536
-#        hard: 65536
+      nofile:
+        soft: 65536
+        hard: 65536
 
   kibana_cm:
     <<: [*networks, *enable_traefik]
-    image: docker.elastic.co/kibana/kibana${ELASTIC_TAG:?}
-    restart: unless-stopped
+    image: docker.elastic.co/kibana/kibana${STACK_VERSION:?}
     container_name: kibana_cm
-    environment:
-      SERVER_NAME: ${SERVERNAME}
-      XPACK_ENCRYPTEDSAVEDOBJECTS_ENCRYPTIONKEY: ${KEY}
     ports:
-      - 5602:5601
+      - ${KIBANA_PORT:-5601}:5601
+    environment:
+      # https://www.elastic.co/guide/en/kibana/8.14/docker.html#environment-variable-config
+      # https://github.com/elastic/elasticsearch/blob/8.14/docs/reference/setup/install/docker/docker-compose.yml
+      SERVER_NAME: ${SERVERNAME:?}
+      XPACK_SECURITY_ENABLED: "false"
+      XPACK_MONITORING_ENABLED: "false"
+      XPACK_APM_ENABLED: "false"
+      XPACK_CANVAS_ENABLED: "false"
+      XPACK_REPORTING_ENABLED: "false"
+      XPACK_DASHBOARDS_ENABLED: "false"
+      XPACK_ENCRYPTEDSAVEDOBJECTS_ENCRYPTIONKEY: ${KEY}
+      TZ: ${TIMEZONE:-UTC}
+    mem_limit: ${MEM_LIMIT:-1073741824}
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl -s -I http://localhost:5601 | grep -q 'HTTP/1.1 302 Found'",
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 120
+    restart: unless-stopped
     depends_on:
       - elasticsearch_cm
 

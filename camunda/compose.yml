@@ -1,31 +1,48 @@
 x-networks: &networks
   networks:
     - default
+
 x-labels: &enable_traefik
   labels:
     - traefik.enable=true
 
+x-restart: &restart
+  restart: unless-stopped
+
 services:
   # https://github.com/camunda/camunda-distributions/blob/main/docker-compose/versions/camunda-8.5/docker-compose.yaml
   zeebe:
-    <<: *networks
+    <<: [*networks, *restart]
     image: camunda/zeebe${ZEEBE_TAG:?}
     container_name: zeebe
     ports:
       # gRPC
-      - ${ZEEBE_GRPC_PORT:-26500}:5601
+      - ${ZEEBE_GRPC_PORT:-26500}:26500
       # monitoringApi
       # - 9600:9600
       # REST API
       - ${ZEEBE_REST_API_PORT:-8088}:8080
     environment:
       JAVA_TOOL_OPTIONS: "-Xms512m -Xmx512m"
-    restart: unless-stopped
+      ZEEBE_BROKER_GATEWAY_SECURITY_AUTHENTICATION_MODE: ${ZEEBE_AUTHENTICATION_MODE?}
+      ZEEBE_BROKER_GATEWAY_MULTITENANCY_ENABLED: ${MULTI_TENANCY_ENABLED}
+      ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_CLASSNAME: io.camunda.zeebe.exporter.ElasticsearchExporter
+      ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_ARGS_URL: http://elasticsearch_cm:9200
+      ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_ARGS_BULK_SIZE: 1000
+      ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_ARGS_BULK_DELAY: 1
+      SPRING_CONFIG_ADDITIONAL_LOCATION: /usr/local/zeebe/config/exporter.yml
+      ZEEBE_BROKER_EXPORTERS_KAFKA_ARGS_PRODUCER_SERVERS: kafka:9092
+    volumes:
+      - ./zeebe:/usr/local/zeebe/data
+      - ./exporter/exporter.yml:/usr/local/zeebe/config/exporter.yml
+      - ./exporter/zeebe-kafka-exporter-3.1.1-jar-with-dependencies.jar:/usr/local/zeebe/lib/zeebe-kafka-exporter-3.1.1-jar-with-dependencies.jar
     depends_on:
-      - elasticsearch_cm
+      elasticsearch_cm:
+        condition: service_healthy
+
 
   elasticsearch_cm:
-    <<: *networks
+    <<: [*networks, *restart]
     image: docker.elastic.co/elasticsearch/elasticsearch${STACK_VERSION:?}
     container_name: elasticsearch_cm
     ports:
@@ -37,8 +54,12 @@ services:
       xpack.security.enabled: "false"
       xpack.security.enrollment.enabled: "false"
     volumes:
-      - ./data:/data
-    restart: unless-stopped
+      - ./data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://elasticsearch_cm:9200/_cat/health | grep -q green" ]
+      interval: 45s
+      timeout: 5s
+      retries: 60
     ulimits:
       memlock:
         soft: -1
@@ -48,7 +69,7 @@ services:
         hard: 65536
 
   kibana_cm:
-    <<: [*networks, *enable_traefik]
+    <<: [*networks, *enable_traefik, *restart]
     image: docker.elastic.co/kibana/kibana${STACK_VERSION:?}
     container_name: kibana_cm
     ports:
@@ -64,6 +85,7 @@ services:
       XPACK_REPORTING_ENABLED: "false"
       XPACK_DASHBOARDS_ENABLED: "false"
       XPACK_ENCRYPTEDSAVEDOBJECTS_ENCRYPTIONKEY: ${KEY}
+      ELASTICSEARCH_HOSTS: "http://elasticsearch_cm:9200"
       TZ: ${TIMEZONE:-UTC}
     mem_limit: ${MEM_LIMIT:-1073741824}
     healthcheck:
@@ -75,9 +97,9 @@ services:
       interval: 10s
       timeout: 10s
       retries: 120
-    restart: unless-stopped
     depends_on:
-      - elasticsearch_cm
+      elasticsearch_cm:
+        condition: service_healthy
 
 
 networks:

@@ -58,6 +58,19 @@
         certResolver = "letsencrypt"
         [[http.routers.kibana-secure.tls.domains]]
           main = '{{ env "CERTNAME"}}'
+    [http.routers.kibana_cm]
+      entryPoints = ['web']
+      rule = 'Host(`{{ env "KIBANA_CMHOSTNAME"}}`)'
+      middlewares = ['kibana-https-redirect']
+      service = "kibana_cm-srv"
+    [http.routers.kibana_cm-secure]
+      entryPoints = ['websecure']
+      rule = 'Host(`{{ env "KIBANA_CMHOSTNAME"}}`)'
+      service = "kibana_cm-srv"
+      [http.routers.kibana_cm-secure.tls]
+        certResolver = "letsencrypt"
+        [[http.routers.kibana_cm-secure.tls.domains]]
+          main = '{{ env "CERTNAME"}}'
     [http.routers.arango]
       entryPoints = ['web']
       rule = 'Host(`{{ env "ARANGOHOSTNAME"}}`)'
@@ -113,6 +126,9 @@
     [http.middlewares.kibana-https-redirect.redirectScheme]
       scheme = "https"
       permanent = true
+    [http.middlewares.kibana_cm-https-redirect.redirectScheme]
+      scheme = "https"
+      permanent = true
     [http.middlewares.kafka-ui-https-redirect.redirectScheme]
       scheme = "https"
       permanent = true
@@ -135,6 +151,9 @@
     [http.services.kibana-srv]
       [[http.services.kibana-srv.loadBalancer.servers]]
         url = "http://kibana:5601"
+    [http.services.kibana_cm-srv]
+      [[http.services.kibana_cm-srv.loadBalancer.servers]]
+        url = "http://kibana_cm:5601"
     [http.services.kafka-ui-srv]
       [[http.services.kafka-ui-srv.loadBalancer.servers]]
         url = "http://kafbat-ui:8080"

@@ -1,13 +1,17 @@
 x-networks: &networks
   networks:
     - default
+
 x-labels: &enable_traefik
   labels:
     - traefik.enable=true
 
+x-restart: &restart
+  restart: unless-stopped
+
 services:
   elasticsearch:
-    <<: *networks
+    <<: [*networks, *restart]
     image: docker.elastic.co/elasticsearch/elasticsearch${STACK_VERSION:?}
     container_name: elasticsearch
     ports:
@@ -19,8 +23,7 @@ services:
       xpack.security.enabled: "false"
       xpack.security.enrollment.enabled: "false"
     volumes:
-      - ./data:/data
-    restart: unless-stopped
+      - ./data:/usr/share/elasticsearch/data
     ulimits:
       memlock:
         soft: -1
@@ -30,7 +33,7 @@ services:
         hard: 65536
 
   kibana:
-    <<: [*networks, *enable_traefik]
+    <<: [*networks, *enable_traefik, *restart]
     image: docker.elastic.co/kibana/kibana${STACK_VERSION:?}
     container_name: kibana
     ports:
@@ -46,6 +49,7 @@ services:
       XPACK_REPORTING_ENABLED: "false"
       XPACK_DASHBOARDS_ENABLED: "false"
       XPACK_ENCRYPTEDSAVEDOBJECTS_ENCRYPTIONKEY: ${KEY}
+      ELASTICSEARCH_HOSTS: "http://elasticsearch:9200"
       TZ: ${TIMEZONE:-UTC}
     mem_limit: ${MEM_LIMIT:-1073741824}
     healthcheck:
@@ -57,7 +61,6 @@ services:
       interval: 10s
       timeout: 10s
       retries: 120
-    restart: unless-stopped
     depends_on:
       - elasticsearch
 

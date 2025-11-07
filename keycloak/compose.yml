@@ -4,14 +4,17 @@ x-networks: &networks
 x-labels: &enable_traefik
   labels:
     - traefik.enable=true
+x-restart: &restart
+  restart: unless-stopped
 
 services:
   keycloak:
-    <<: [*networks, *enable_traefik]
+    <<: [*networks, *enable_traefik, *restart]
     image: quay.io/keycloak/keycloak${KEYCLOAK_TAG:?}
     container_name: keycloak
-    restart: unless-stopped
     command: start
+    ports:
+      - ${KEYCLOAK_PORT:-0.0.0.0:8080}:8080
     environment:
       # KC_LOG_LEVEL: DEBUG
 
@@ -21,7 +24,7 @@ services:
       KC_DB_USERNAME: "${KC_DB_USERNAME:?}"
       KC_DB_PASSWORD: "${KC_DB_PASSWORD:?}"
       KC_DB_URL: "${KC_DB_URL:?}"
-      # KC_HEALTH_ENABLED: "true"
+      KC_HEALTH_ENABLED: "${KC_HEALTH_ENABLED:?}"
 
       KC_HTTP_ENABLED: true
       KC_HOSTNAME_STRICT: false
@@ -29,16 +32,13 @@ services:
       PROXY_ADDRESS_FORWARDING: true
 
       TZ: ${TIMEZONE:-UTC}
-
-    ports:
-      - 0.0.0.0:8080:8080
-
-#    healthcheck:
-#      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
-#      interval: 1s
-#      timeout: 5s
-#      retries: 15
-#      start_period: 10s
+    healthcheck:
+      # https://www.keycloak.org/observability/health#_healthcheck
+      test: ["CMD-SHELL", "{ printf 'HEAD /health/ready HTTP/1.0\r\n\r\n' >&0; grep 'HTTP/1.0 200'; } 0<>/dev/tcp/localhost/9000"]
+      interval: 1s
+      timeout: 5s
+      retries: 15
+      start_period: 10s
 
 
 networks:

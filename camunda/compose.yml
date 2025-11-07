@@ -1,11 +1,9 @@
 x-networks: &networks
   networks:
     - default
-
 x-labels: &enable_traefik
   labels:
     - traefik.enable=true
-
 x-restart: &restart
   restart: unless-stopped
 
@@ -17,14 +15,14 @@ services:
     container_name: zeebe
     ports:
       # gRPC
-      - ${ZEEBE_GRPC_PORT:-26500}:26500
+      - ${ZEEBE_GRPC_PORT:-0.0.0.0:26500}:26500
       # monitoringApi
       # - 9600:9600
       # REST API
-      - ${ZEEBE_REST_API_PORT:-8088}:8080
+      - ${ZEEBE_REST_API_PORT:?}:8080
     environment:
       JAVA_TOOL_OPTIONS: "-Xms512m -Xmx512m"
-      ZEEBE_BROKER_GATEWAY_SECURITY_AUTHENTICATION_MODE: ${ZEEBE_AUTHENTICATION_MODE?}
+      ZEEBE_BROKER_GATEWAY_SECURITY_AUTHENTICATION_MODE: ${ZEEBE_AUTHENTICATION_MODE:?}
       ZEEBE_BROKER_GATEWAY_MULTITENANCY_ENABLED: ${MULTI_TENANCY_ENABLED}
       ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_CLASSNAME: io.camunda.zeebe.exporter.ElasticsearchExporter
       ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_ARGS_URL: http://elasticsearch_cm:9200
@@ -46,7 +44,7 @@ services:
     image: docker.elastic.co/elasticsearch/elasticsearch${STACK_VERSION:?}
     container_name: elasticsearch_cm
     ports:
-      - ${ES_PORT:-9200}:9200
+      - ${ES_PORT:-0.0.0.0:9200}:9200
     environment:
       ES_JAVA_OPTS: "-Xms512m -Xmx512m"
       bootstrap.memory_lock: "true"
@@ -73,7 +71,7 @@ services:
     image: docker.elastic.co/kibana/kibana${STACK_VERSION:?}
     container_name: kibana_cm
     ports:
-      - ${KIBANA_PORT:-5601}:5601
+      - ${KIBANA_PORT:-0.0.0.0:5601}:5601
     environment:
       # https://www.elastic.co/guide/en/kibana/8.14/docker.html#environment-variable-config
       # https://github.com/elastic/elasticsearch/blob/8.14/docs/reference/setup/install/docker/docker-compose.yml
@@ -85,6 +83,7 @@ services:
       XPACK_REPORTING_ENABLED: "false"
       XPACK_DASHBOARDS_ENABLED: "false"
       XPACK_ENCRYPTEDSAVEDOBJECTS_ENCRYPTIONKEY: ${KEY}
+      SERVER_PUBLICBASEURL: "https://${SERVERNAME:?}"
       ELASTICSEARCH_HOSTS: "http://elasticsearch_cm:9200"
       TZ: ${TIMEZONE:-UTC}
     mem_limit: ${MEM_LIMIT:-1073741824}

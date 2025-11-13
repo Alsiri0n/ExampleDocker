@@ -16,7 +16,7 @@ services:
     image: apache/kafka${KAFKA_TAG:?}
     container_name: kafka
     ports:
-      - ${KAFKA_PORT:-9095}:9095
+      - ${KAFKA_HOST_PORT:-9095}:${KAFKA_CONTAINER_PORT:-9095}
     environment:
       # KRaft
       KAFKA_NODE_ID: 1
@@ -29,7 +29,7 @@ services:
       # Listeners
       KAFKA_LISTENERS: "PLAINTEXT://:9092,CONTROLLER://:9093,INTER_BROKER://:9094,OAUTH://:9095"
       KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://kafka:9092,INTER_BROKER://localhost:9094,OAUTH://${ADVERTISED_ADDRESS:?}:9095"
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,INTER_BROKER:PLAINTEXT,OAUTH:SASL_PLAINTEXT,"
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,INTER_BROKER:PLAINTEXT,OAUTH:SASL_PLAINTEXT"
       
       # Clients
       KAFKA_SASL_ENABLED_MECHANISMS: PLAIN,OAUTHBEARER
@@ -56,8 +56,11 @@ services:
     volumes:
       # - ./kafka_server_jaas.conf:/etc/kafka/jaas.conf:ro
       - ./data/kafka-storage:/tmp/kafka-logs
-    # depends_on:
-      # - zookeeper
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/kafka/bin/kafka-broker-api-versions.sh --bootstrap-server localhost:9092 || exit 1"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
 
   # schema registry for confluent
   # schema-registry:

@@ -4,13 +4,14 @@ x-networks: &networks
 x-labels: &enable_traefik
   labels:
     - traefik.enable=true
+x-restart: &restart
+  restart: unless-stopped
 
 services:
   minio:
-    <<: [*networks, *enable_traefik]
-    container_name: minio
+    <<: [*networks, *enable_traefik, *restart]
     image: minio/minio${MINIO_TAG:?}
-    restart: unless-stopped
+    container_name: minio
     volumes:
       - ./data:/data
     ports:

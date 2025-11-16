@@ -1,0 +1,33 @@
+networks:
+  default:
+    name: ${MYNET:?}
+    external: true
+
+services:
+  arangodb:
+    container_name: arangodb
+    image: arangodb:${ARANGO_TAG:?}
+    environment:
+      ARANGO_ROOT_PASSWORD: "${ARANGO_ROOT_PASSWORD:?}"
+      TZ: ${TIMEZONE:?}
+    ports:
+      - 8529:8529
+    # "--log.level", "all=warning", 
+    # "--log.level", "queries=trace", 
+    # "--log.level", "startup=info",
+    command: [
+      #              "--log.level", "general=trace", 
+      #        "--log.level", "requests=trace", 
+      #        "--log.output", "general=file:////var/lib/arangodb3/queries.logs",
+      #        "--log.output", "requests=file:////var/lib/arangodb3/requests.logs",
+              "--web-interface.proxy-request-check", "true", 
+              "--web-interface.trusted-proxy", "0.0.0.0"
+              ]
+    restart: unless-stopped
+    volumes:
+      - ./data:/var/lib/arangodb3
+      - ./app-data:/var/lib/arangodb3-apps
+    networks:
+      - default
+    labels:
+      - "traefik.enable=true"

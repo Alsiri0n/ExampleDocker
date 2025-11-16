@@ -1,0 +1,22 @@
+x-networks: &networks
+  networks:
+    - default
+
+services:
+  redis:
+    <<: *networks
+    image: redis:alpine
+    container_name: redis
+    ports:
+      - ${REDIS_PORT:-0.0.0.0:6379}:6379
+    # command: redis-server --save 500 1 --loglevel debug --requirepass $REDIS_PWD
+    # command: redis-server --save 20 1 --loglevel notice
+    command: redis-server --save 20 1 --loglevel debug --requirepass $REDIS_PWD
+    restart: unless-stopped
+    volumes:
+      - ./cache:/data
+
+networks:
+  default:
+    name: ${MYNET:?}
+    external: true

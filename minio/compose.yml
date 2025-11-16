@@ -1,0 +1,28 @@
+x-networks: &networks
+  networks:
+    - default
+x-labels: &enable_traefik
+  labels:
+    - traefik.enable=true
+x-restart: &restart
+  restart: unless-stopped
+
+services:
+  minio:
+    <<: [*networks, *enable_traefik, *restart]
+    image: minio/minio${MINIO_TAG:?}
+    container_name: minio
+    volumes:
+      - ./data:/data
+    ports:
+      - 0.0.0.0:9000:9000
+      - 0.0.0.0:9001:9001
+    command: server --console-address ":9001" /data
+    environment:
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER:?}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD:?}
+
+networks:
+  default:
+    name: ${MYNET:?}
+    external: true

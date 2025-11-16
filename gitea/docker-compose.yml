@@ -1,22 +1,22 @@
 networks:
   default:
-    name: ${MYNET}
+    name: ${MYNET:?}
     external: true
 
 services:
   gitea:
+    container_name: gitea
     image: gitea/gitea:latest
     restart: unless-stopped
-    container_name: gitea
     environment:
-      - USER_UID=1000
-      - USER_GID=1000
-      - DB_TYPE=postgres
-      - DB_HOST=postgres
-      - DB_NAME=${DB_NAME}
-      - DB_USER=${USER_NAME}
-      - DB_PASSWD=${PASSWORD}
-      - TZ=${TIMEZONE}
+      - USER_UID: 1000
+      - USER_GID: 1000
+      - DB_TYPE: postgres
+      - DB_HOST: postgres
+      DB_NAME: ${DB_NAME:?}
+      DB_USER: ${USER_NAME:?}
+      DB_PASSWD: ${PASSWORD:?}
+      TZ: ${TIMEZONE}
     volumes:
       - ./data:/data
     ports:

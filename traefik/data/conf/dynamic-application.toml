@@ -16,8 +16,34 @@
       rule = 'Host(`{{ env "GITEAHOSTNAME"}}`)'
       service = "gitea-srv"
       [http.routers.gitea-secure.tls]
-        certResolver = "default"
+        certResolver = "letsencrypt"
         [[http.routers.gitea-secure.tls.domains]]
+          main = '{{ env "CERTNAME"}}'
+    [http.routers.keycloak]
+      entryPoints = ['web']
+      rule = 'Host(`{{ env "KEYCLOAKHOSTNAME"}}`)'
+      middlewares = ['keycloak-https-redirect']
+      service = "keycloak-srv"
+    [http.routers.keycloak-secure]
+      entryPoints = ['websecure']
+      rule = 'Host(`{{ env "KEYCLOAKHOSTNAME"}}`)'
+      service = "keycloak-srv"
+      [http.routers.keycloak-secure.tls]
+        certResolver = "letsencrypt"
+        [[http.routers.keycloak-secure.tls.domains]]
+          main = '{{ env "CERTNAME"}}'
+    [http.routers.minio]
+      entryPoints = ['web']
+      rule = 'Host(`{{ env "MINIOHOSTNAME"}}`)'
+      middlewares = ['minio-https-redirect']
+      service = "minio-srv"
+    [http.routers.minio-secure]
+      entryPoints = ['websecure']
+      rule = 'Host(`{{ env "MINIOHOSTNAME"}}`)'
+      service = "minio-srv"
+      [http.routers.minio-secure.tls]
+        certResolver = "letsencrypt"
+        [[http.routers.minio-secure.tls.domains]]
           main = '{{ env "CERTNAME"}}'
     [http.routers.kibana]
       entryPoints = ['web']
@@ -29,8 +55,34 @@
       rule = 'Host(`{{ env "KIBANAHOSTNAME"}}`)'
       service = "kibana-srv"
       [http.routers.kibana-secure.tls]
-        certResolver = "default"
+        certResolver = "letsencrypt"
         [[http.routers.kibana-secure.tls.domains]]
+          main = '{{ env "CERTNAME"}}'
+    [http.routers.kibana_cm]
+      entryPoints = ['web']
+      rule = 'Host(`{{ env "KIBANA_CMHOSTNAME"}}`)'
+      middlewares = ['kibana-https-redirect']
+      service = "kibana_cm-srv"
+    [http.routers.kibana_cm-secure]
+      entryPoints = ['websecure']
+      rule = 'Host(`{{ env "KIBANA_CMHOSTNAME"}}`)'
+      service = "kibana_cm-srv"
+      [http.routers.kibana_cm-secure.tls]
+        certResolver = "letsencrypt"
+        [[http.routers.kibana_cm-secure.tls.domains]]
+          main = '{{ env "CERTNAME"}}'
+    [http.routers.arango]
+      entryPoints = ['web']
+      rule = 'Host(`{{ env "ARANGOHOSTNAME"}}`)'
+      middlewares = ['arango-https-redirect']
+      service = "arango-srv"
+    [http.routers.arango-secure]
+      entryPoints = ['websecure']
+      rule = 'Host(`{{ env "ARANGOHOSTNAME"}}`)'
+      service = "arango-srv"
+      [http.routers.arango-secure.tls]
+        certResolver = "letsencrypt"
+        [[http.routers.arango-secure.tls.domains]]
           main = '{{ env "CERTNAME"}}'
     [http.routers.kafka-ui]
       entryPoints = ['web']
@@ -42,7 +94,7 @@
       rule = 'Host(`{{ env "KAFKA_UIHOSTNAME"}}`)'
       service = "kafka-ui-srv"
       [http.routers.kafka-ui-secure.tls]
-        certResolver = "default"
+        certResolver = "letsencrypt"
         [[http.routers.kafka-ui-secure.tls.domains]]
           main = '{{ env "CERTNAME"}}'
     [http.routers.jenkins]
@@ -55,7 +107,7 @@
        rule = 'Host(`{{ env "JENKINSHOSTNAME"}}`)'
        service = "jenkins-srv"
        [http.routers.jenkins-secure.tls]
-         certResolver = "default"
+         certResolver = "letsencrypt"
          [[http.routers.jenkins-secure.tls.domains]]
            main = '{{ env "CERTNAME"}}'
   [http.middlewares]
@@ -65,7 +117,16 @@
     [http.middlewares.gitea-https-redirect.redirectScheme]
       scheme = "https"
       permanent = true
+    [http.middlewares.keycloak-https-redirect.redirectScheme]
+      scheme = "https"
+      permanent = true
+    [http.middlewares.minio-https-redirect.redirectScheme]
+      scheme = "https"
+      permanent = true
     [http.middlewares.kibana-https-redirect.redirectScheme]
+      scheme = "https"
+      permanent = true
+    [http.middlewares.kibana_cm-https-redirect.redirectScheme]
       scheme = "https"
       permanent = true
     [http.middlewares.kafka-ui-https-redirect.redirectScheme]
@@ -74,16 +135,31 @@
     [http.middlewares.jenkins-https-redirect.redirectScheme]
       scheme = "https"
       permanent = true
+    [http.middlewares.arango-https-redirect.redirectScheme]
+      scheme = "https"
+      permanent = true
   [http.services]
     [http.services.gitea-srv]
       [[http.services.gitea-srv.loadBalancer.servers]]
         url = "http://gitea:3000"
+    [http.services.keycloak-srv]
+      [[http.services.keycloak-srv.loadBalancer.servers]]
+        url = "http://keycloak:8080"
+    [http.services.minio-srv]
+      [[http.services.minio-srv.loadBalancer.servers]]
+        url = "http://minio:9001"
     [http.services.kibana-srv]
       [[http.services.kibana-srv.loadBalancer.servers]]
         url = "http://kibana:5601"
+    [http.services.kibana_cm-srv]
+      [[http.services.kibana_cm-srv.loadBalancer.servers]]
+        url = "http://kibana_cm:5601"
     [http.services.kafka-ui-srv]
       [[http.services.kafka-ui-srv.loadBalancer.servers]]
-        url = "http://kafka-ui:8080"
+        url = "http://kafbat-ui:8080"
     [http.services.jenkins-srv]
       [[http.services.jenkins-srv.loadBalancer.servers]]
         url = "http://jenkins:8080"
+    [http.services.arango-srv]
+      [[http.services.arango-srv.loadBalancer.servers]]
+        url = "http://arangodb:8529"

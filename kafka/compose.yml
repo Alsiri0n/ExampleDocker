@@ -1,0 +1,120 @@
+x-networks: &networks
+  networks:
+    - default
+x-labels: &enable_traefik
+  labels:
+    - traefik.enable=true
+x-restart: &restart
+  restart: unless-stopped
+
+
+services:
+  kafka:
+    <<: [*networks, *restart]
+    image: apache/kafka${KAFKA_TAG:?}
+    container_name: kafka
+    ports:
+      - ${KAFKA_HOST_PORT:-9095}:${KAFKA_CONTAINER_PORT:-9095}
+    environment:
+      # KRaft
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:9093
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTER_BROKER
+      KAFKA_SASL_MECHANISM_INTER_BROKER_PROTOCOL: PLAINTEXT
+
+      # Listeners
+      KAFKA_LISTENERS: "PLAINTEXT://:9092,CONTROLLER://:9093,INTER_BROKER://:9094,OAUTH://:9095"
+      KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://kafka:9092,INTER_BROKER://localhost:9094,OAUTH://${ADVERTISED_ADDRESS:?}:9095"
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,INTER_BROKER:PLAINTEXT,OAUTH:SASL_PLAINTEXT"
+
+      # Clients
+      KAFKA_SASL_ENABLED_MECHANISMS: PLAIN,OAUTHBEARER
+      KAFKA_LISTENER_NAME_OAUTH_PLAIN_SASL_JAAS_CONFIG: org.apache.kafka.common.security.plain.PlainLoginModule required;
+      KAFKA_SASL_OAUTHBEARER_JWKS_ENDPOINT_URL: "${KEYCLOAK_PROTOCOL:?}://${KEYCLOAK_HOST:?}:${KEYCLOAK_PORT}/realms/${KEYCLOAK_REALM:?}/protocol/openid-connect/certs"
+      KAFKA_LISTENER_NAME_OAUTH_OAUTHBEARER_SASL_JAAS_CONFIG: org.apache.kafka.common.security.oauthbearer.OAuthBearerLoginModule required;
+      KAFKA_LISTENER_NAME_OAUTH_OAUTHBEARER_SASL_SERVER_CALLBACK_HANDLER_CLASS: org.apache.kafka.common.security.oauthbearer.OAuthBearerValidatorCallbackHandler
+
+      KAFKA_OFFSETS_RETENTION_MINUTES: 10 # Time before remove empty subscribers
+
+      KAFKA_SASL_OAUTHBEARER_CLOCK_SKEW_SECONDS: 30
+
+      # KAFKA_LOG4J_LOGGERS: "org.apache.kafka.common.security.oauthbearer=TRACE,org.apache.kafka.common.security.authenticator=DEBUG,kafka.network.RequestChannel=DEBUG,kafka.network.Processor=DEBUG,org.apache.kafka.common.security.oauthbearer.internals.expiring=DEBUG"
+      # KAFKA_LOG4J_ROOT_LOGGER: "DEBUG, stdout"
+      # KAFKA_LOG4J_APPENDER_STDOUT_LAYOUT: "org.apache.log4j.PatternLayout"
+
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1 # Only for develop single-node
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1 # Default 3, not correct for single-node
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1 # Default 2, not correct for single-node
+
+      # /opt/kafka/bin/kafka-storage.sh random-uuid
+      CLUSTER_ID: ${CLUSTER_ID:?}
+      TZ: ${TIMEZONE:-UTC}
+    volumes:
+      # - ./kafka_server_jaas.conf:/etc/kafka/jaas.conf:ro
+      - ./data/kafka-storage:/tmp/kafka-logs:z,U
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/kafka/bin/kafka-broker-api-versions.sh --bootstrap-server localhost:9092 || exit 1"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+
+  # schema registry for confluent
+  # schema-registry:
+  #   image: confluentinc/cp-schema-registry:${SCHEMA_REGISTRY_TAG:?}
+  #   hostname: schema-registry
+  #   container_name: schema-registry
+  #   depends_on:
+  #     # - kafka
+  #     - zookeeper
+  #   ports:
+  #     - 18081:8081
+  #   environment:
+  #     SCHEMA_REGISTRY_HOST_NAME: schema-registry
+  #     SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: "zookeeper:2181"
+  #     # SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: kafka:19092
+  #     SCHEMA_REGISTRY_LOG4J_ROOT_LOGLEVEL: WARN
+  #     SCHEMA_REGISTRY_LISTENERS: "http://0.0.0.0:8081"
+
+#  schema-registry:
+#    image: bitnami/schema-registry${SCHEMA_REGISTRY_TAG:?}
+#    hostname: schema-registry
+#    container_name: schema-registry
+#    restart: unless-stopped
+#    ports:
+#      - 18081:8081
+#      # - 18082:8082
+#    depends_on:
+#      - kafka
+#    environment:
+#      SCHEMA_REGISTRY_KAFKA_BROKERS: "PLAINTEXT://kafka:9092"
+#      SCHEMA_REGISTRY_HOST_NAME: "schema-registry"
+#      # - SCHEMA_REGISTRY_LISTENERS=http://0.0.0.0:8081,https://0.0.0.0:8082
+#      SCHEMA_REGISTRY_LISTENERS: "http://0.0.0.0:8081"
+#      # - SCHEMA_REGISTRY_SSL_KEYSTORE_PASSWORD=keystore
+#      # - SCHEMA_REGISTRY_SSL_TRUSTSTORE_PASSWORD=keystore
+#      SCHEMA_REGISTRY_SSL_ENDPOINT_IDENTIFICATION_ALGORITHM: "none"
+#      SCHEMA_REGISTRY_CLIENT_AUTHENTICATION: "NONE"
+    # volumes:
+    #   - ./keystore.jks:/opt/bitnami/schema-registry/certs/keystore.jks:ro
+    #   - ./truststore.jks:/opt/bitnami/schema-registry/certs/truststore.jks:ro
+
+  kafbat-ui:
+    <<: [*networks, *enable_traefik, *restart]
+    image: ghcr.io/kafbat/kafka-ui:latest
+    container_name: kafbat-ui
+    ports:
+      - ${KAFBAT_PORT:-8081}:8080
+    environment:
+      - DYNAMIC_CONFIG_ENABLED=true
+    volumes:
+      - ./kui/config.yml:/etc/kafkaui/dynamic_config.yaml:z
+    depends_on:
+      - kafka
+#      - schema-registry
+
+networks:
+  default:
+    name: ${MYNET:?}
+    external: true

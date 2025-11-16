@@ -1,0 +1,40 @@
+x-networks: &networks
+  networks:
+    - default
+x-restart: &restart
+  restart: unless-stopped
+
+services:
+  traefik:
+    <<: [*networks, *restart]
+    image: traefik:latest
+    container_name: traefik
+    ports:
+      - 0.0.0.0:443:443
+    environment:
+      TRAEFIKHOSTNAME: ${TRAEFIKHOSTNAME:?}
+      GITEAHOSTNAME: ${GITEAHOSTNAME:?}
+      JENKINSHOSTNAME: ${JENKINSHOSTNAME:?}
+      KAFKA_UIHOSTNAME: ${KAFKA_UIHOSTNAME:?}
+      KIBANAHOSTNAME: ${KIBANAHOSTNAME:?}
+      KIBANA_CMHOSTNAME: ${KIBANA_CMHOSTNAME:?}
+      ARANGOHOSTNAME: ${ARANGOHOSTNAME:?}
+      MONGOEXPRESSHOSTNAME: ${MONGOEXPRESSHOSTNAME:?}
+      MINIOHOSTNAME: ${MINIOHOSTNAME:?}
+      KEYCLOAKHOSTNAME: ${KEYCLOAKHOSTNAME:?}
+      CERTNAME: ${CERTNAME}
+      CF_API_EMAIL: ${CF_API_EMAIL:?}
+      CF_DNS_API_TOKEN: ${CF_DNS_API_TOKEN:?}
+      TRAEFIK_CERTIFICATESRESOLVERS_LETSENCRYPT_ACME_EMAIL: ${CF_API_EMAIL}
+      TZ: ${TIMEZONE:-UTC}
+    volumes:
+      - ${SOCKET_PATH:-/var/run/docker.sock}:/var/run/docker.sock:rw
+      - ./data:/home/traefik/:z
+      - /etc/localtime:/etc/localtime:ro
+      - ./static-conf.toml:/traefik.toml:z
+      - ./acme.json:/acme.json:z
+
+networks:
+  default:
+    name: ${MYNET:?}
+    external: true

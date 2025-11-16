@@ -1,0 +1,30 @@
+networks:
+  default:
+    name: ${MYNET:?}
+    external: true
+
+services:
+  opa:
+    container_name: opa
+    restart: unless-stopped
+    image: openpolicyagent/opa:0.56.0-static
+    command:
+      - "run"
+      - "--server"
+      - "/policies"
+      - "/data"
+      - "--log-format=json-pretty"
+      - "--set=decision_logs.console=true"
+    ports:
+      - 8181:8181
+    volumes:
+      - /policies/:/policies
+      - /data/:/data
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "1"
+        max-size: "300m"
+
+    networks:
+      - default

@@ -1,0 +1,25 @@
+x-networks: &networks
+  networks:
+    - default
+x-restart: &restart
+  restart: unless-stopped
+
+
+services:
+  postgres:
+    <<: [*networks, *restart]
+    image: postgres${POSTGRES_TAG:latest}
+    container_name: postgres
+    ports:
+      - ${POSTGRESQL_PORT:-0.0.0.0:5432}:5432
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASS:?}
+      TZ: ${TIMEZONE:-UTC}
+    volumes:
+      - ./data:/var/lib/postgresql:z
+      - /etc/localtime:/etc/localtime:ro
+
+networks:
+  default:
+    name: ${MYNET:?}
+    external: true

@@ -4,11 +4,10 @@ x-networks: &networks
 x-restart: &restart
   restart: unless-stopped
 
-
 services:
   postgres:
     <<: [*networks, *restart]
-    image: postgres${POSTGRES_TAG:latest}
+    image: postgres${POSTGRES_TAG:-:latest}
     container_name: postgres
     ports:
       - ${POSTGRESQL_PORT:-0.0.0.0:5432}:5432

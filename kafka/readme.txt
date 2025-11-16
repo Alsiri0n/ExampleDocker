@@ -7,3 +7,4 @@ https://kafka.apache.org/documentation/
 
 Run no-auth container
 docker compose -f compose.yml -f compose.no-auth.yml up -d
+podman compose -f compose.yml -f compose.no-auth.yml up -d

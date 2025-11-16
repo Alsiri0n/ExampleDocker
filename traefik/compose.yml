@@ -28,7 +28,8 @@ services:
       TRAEFIK_CERTIFICATESRESOLVERS_LETSENCRYPT_ACME_EMAIL: ${CF_API_EMAIL}
       TZ: ${TIMEZONE:-UTC}
     volumes:
-      - ${SOCKET_PATH:-/var/run/docker.sock}:/var/run/docker.sock:rw
+      # https://blog.cthudson.com/2023-11-02-running-traefik-with-podman/
+      - ${SOCKET_PATH:-/var/run/docker.sock}:/var/run/docker.sock:ro
       - ./data:/home/traefik/:z
       - /etc/localtime:/etc/localtime:ro
       - ./static-conf.toml:/traefik.toml:z

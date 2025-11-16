@@ -1,0 +1,14 @@
+
+module my-traefik 1.0;
+
+require {
+	type container_t;
+	type container_runtime_t;
+	type user_tmp_t;
+	class dir write;
+	class unix_stream_socket connectto;
+}
+
+#============= container_t ==============
+allow container_t container_runtime_t:unix_stream_socket connectto;
+allow container_t user_tmp_t:dir write;

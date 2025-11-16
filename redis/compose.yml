@@ -1,10 +1,12 @@
 x-networks: &networks
   networks:
     - default
+x-restart: &restart
+  restart: unless-stopped
 
 services:
   redis:
-    <<: *networks
+    <<: [*networks, *restart]
     image: redis:alpine
     container_name: redis
     ports:
@@ -12,9 +14,8 @@ services:
     # command: redis-server --save 500 1 --loglevel debug --requirepass $REDIS_PWD
     # command: redis-server --save 20 1 --loglevel notice
     command: redis-server --save 20 1 --loglevel debug --requirepass $REDIS_PWD
-    restart: unless-stopped
     volumes:
-      - ./cache:/data
+      - ./cache:/data:z
 
 networks:
   default:

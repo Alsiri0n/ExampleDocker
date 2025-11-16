@@ -53,7 +53,7 @@ services:
       TZ: ${TIMEZONE:-UTC}
     volumes:
       # - ./kafka_server_jaas.conf:/etc/kafka/jaas.conf:ro
-      - ./data/kafka-storage:/tmp/kafka-logs:z,U
+      - ./data/kafka-storage:/tmp/kafka-logs
     healthcheck:
       test: ["CMD-SHELL", "/opt/kafka/bin/kafka-broker-api-versions.sh --bootstrap-server localhost:9092 || exit 1"]
       interval: 10s
@@ -109,7 +109,7 @@ services:
     environment:
       - DYNAMIC_CONFIG_ENABLED=true
     volumes:
-      - ./kui/config.yml:/etc/kafkaui/dynamic_config.yaml:z
+      - ./kui/config.yml:/etc/kafkaui/dynamic_config.yaml
     depends_on:
       - kafka
 #      - schema-registry

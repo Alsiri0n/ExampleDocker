@@ -16,7 +16,7 @@ services:
       POSTGRES_PASSWORD: ${DB_PASS:?}
       TZ: ${TIMEZONE:-UTC}
     volumes:
-      - ./data:/var/lib/postgresql:z
+      - ./data:/var/lib/postgresql
       - /etc/localtime:/etc/localtime:ro
 
 networks:

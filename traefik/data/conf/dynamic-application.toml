@@ -272,9 +272,9 @@
     [http.services.arango-srv]
       [[http.services.arango-srv.loadBalancer.servers]]
         url = "http://arangodb:8529"
-    [http.services.jenkins-srv]
-      [[http.services.jenkins-srv.loadBalancer.servers]]
-        url = "http://jenkins:8080"
+    # [http.services.jenkins-srv]
+    #   [[http.services.jenkins-srv.loadBalancer.servers]]
+    #     url = "http://jenkins:8080"
     [http.services.jellyfin-srv]
       [[http.services.jellyfin-srv.loadBalancer.servers]]
         url = "http://jellyfin:8096"

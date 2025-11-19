@@ -1,0 +1,5 @@
+minio.xml
+sudo cp minio.xml /etc/firewalld/services
+sudo firewall-cmd --zone=my-zone --add-service=minio --permanent
+sudo firewall-cmd --reload
+sudo firewall-cmd --zone=alsihomelab --list-all

@@ -14,9 +14,10 @@ services:
     container_name: minio
     volumes:
       - ./data:/data:z
-    ports:
+    ports: 
       - 0.0.0.0:9000:9000
-      - 0.0.0.0:9001:9001
+    # We use traefik for access to minio
+    #  - 0.0.0.0:9001:9001
     command: server --console-address ":9001" /data
     environment:
       - MINIO_ROOT_USER=${MINIO_ROOT_USER:?}

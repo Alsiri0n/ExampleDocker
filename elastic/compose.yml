@@ -23,7 +23,7 @@ services:
       xpack.security.enabled: "false"
       xpack.security.enrollment.enabled: "false"
     volumes:
-      - ./data:/usr/share/elasticsearch/data
+      - ./data:/usr/share/elasticsearch/data:z,U
     ulimits:
       memlock:
         soft: -1
@@ -36,8 +36,9 @@ services:
     <<: [*networks, *enable_traefik, *restart]
     image: docker.elastic.co/kibana/kibana${STACK_VERSION:?}
     container_name: kibana
-    ports:
-      - ${KIBANA_PORT:-0.0.0.0:5601}:5601
+    # We use traefik for access to kibana
+    # ports:
+    #   - ${KIBANA_PORT:-0.0.0.0:5601}:5601
     environment:
       # https://www.elastic.co/guide/en/kibana/8.14/docker.html#environment-variable-config
       # https://github.com/elastic/elasticsearch/blob/8.14/docs/reference/setup/install/docker/docker-compose.yml

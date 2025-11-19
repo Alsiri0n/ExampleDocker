@@ -31,9 +31,9 @@ services:
       SPRING_CONFIG_ADDITIONAL_LOCATION: /usr/local/zeebe/config/exporter.yml
       ZEEBE_BROKER_EXPORTERS_KAFKA_ARGS_PRODUCER_SERVERS: kafka:9092
     volumes:
-      - ./zeebe:/usr/local/zeebe/data
-      - ./exporter/exporter.yml:/usr/local/zeebe/config/exporter.yml
-      - ./exporter/zeebe-kafka-exporter-3.1.1-jar-with-dependencies.jar:/usr/local/zeebe/lib/zeebe-kafka-exporter-3.1.1-jar-with-dependencies.jar
+      - ./zeebe:/usr/local/zeebe/data:z
+      - ./exporter/exporter.yml:/usr/local/zeebe/config/exporter.yml:z
+      - ./exporter/zeebe-kafka-exporter-3.1.1-jar-with-dependencies.jar:/usr/local/zeebe/lib/zeebe-kafka-exporter-3.1.1-jar-with-dependencies.jar:z
     depends_on:
       elasticsearch_cm:
         condition: service_healthy
@@ -52,7 +52,7 @@ services:
       xpack.security.enabled: "false"
       xpack.security.enrollment.enabled: "false"
     volumes:
-      - ./data:/usr/share/elasticsearch/data
+      - ./data:/usr/share/elasticsearch/data:z,U
     healthcheck:
       test: [ "CMD-SHELL", "curl -f http://elasticsearch_cm:9200/_cat/health | grep -q green" ]
       interval: 45s
@@ -70,8 +70,9 @@ services:
     <<: [*networks, *enable_traefik, *restart]
     image: docker.elastic.co/kibana/kibana${STACK_VERSION:?}
     container_name: kibana_cm
-    ports:
-      - ${KIBANA_PORT:-0.0.0.0:5601}:5601
+    # We use traefik for access to kibana_cm
+    # ports:
+    #   - ${KIBANA_PORT:-0.0.0.0:5601}:5601
     environment:
       # https://www.elastic.co/guide/en/kibana/8.14/docker.html#environment-variable-config
       # https://github.com/elastic/elasticsearch/blob/8.14/docs/reference/setup/install/docker/docker-compose.yml

@@ -16,7 +16,7 @@
     [providers.docker]
         endpoint = "unix:///var/run/docker.sock"
         exposedByDefault = false
-        network = "alsinet"
+#        network = "alsinet"
     [providers.file]
         directory = "/home/traefik/conf"
         watch = true
@@ -38,7 +38,7 @@
 [certificatesResolvers]
     # [certificatesResolvers.default]
     #     [certificatesResolvers.default.acme]
-    #         email = "invisible_blade@bk.ru"
+    #         email = "mail@mail.ru"
     #         storage = "acme.json"
     #         caServer = "https://acme-v02.api.letsencrypt.org/directory"
     #         #caServer = "https://acme-staging-v02.api.letsencrypt.org/directory"
@@ -53,12 +53,15 @@
             #caServer = "https://acme-staging-v02.api.letsencrypt.org/directory"
             [certificatesResolvers.letsencrypt.acme.dnsChallenge]
                 provider = "cloudflare"
-                delayBeforeCheck = 10
+                # https://doc.traefik.io/traefik/master/migrate/v3/#v32-to-v33
+#                delayBeforeCheck = 10
+                [certificatesResolvers.letsencrypt.acme.dnsChallenge.propogation]
+		    delayBeforeCheck = 10
 
 
-[docker]
-    endpoint = "unix:///var/run/docker.sock"
-        watch = true
-        exposedbydefault = false
-        swarmmode = true
+#[docker]
+#    endpoint = "unix:///var/run/docker.sock"
+#        watch = true
+#        exposedbydefault = false
+#        swarmmode = true
 

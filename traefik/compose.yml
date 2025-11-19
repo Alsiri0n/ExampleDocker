@@ -1,6 +1,7 @@
 x-networks: &networks
   networks:
     - default
+    - media
 x-restart: &restart
   restart: unless-stopped
 
@@ -22,6 +23,12 @@ services:
       MONGOEXPRESSHOSTNAME: ${MONGOEXPRESSHOSTNAME:?}
       MINIOHOSTNAME: ${MINIOHOSTNAME:?}
       KEYCLOAKHOSTNAME: ${KEYCLOAKHOSTNAME:?}
+      JELLYFINHOSTNAME: ${JELLYFINHOSTNAME:?}
+      QBITTORRENTHOSTNAME: ${QBITTORRENTHOSTNAME:?}
+      PROWLARRHOSTNAME: ${PROWLARRHOSTNAME}
+      RADARRHOSTNAME: ${RADARRHOSTNAME}
+      SONARRHOSTNAME: ${SONARRHOSTNAME}
+      JELLYSEERRHOSTNAME: ${JELLYSEERRHOSTNAME}
       CERTNAME: ${CERTNAME}
       CF_API_EMAIL: ${CF_API_EMAIL:?}
       CF_DNS_API_TOKEN: ${CF_DNS_API_TOKEN:?}
@@ -39,3 +46,7 @@ networks:
   default:
     name: ${MYNET:?}
     external: true
+  media:
+    name: ${MY_MEDIA_NET:?}
+    external: true
+

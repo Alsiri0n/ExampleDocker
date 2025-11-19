@@ -6,19 +6,19 @@
       middlewares = ['traefik-auth']
       service = "api@internal"
       [http.routers.api.tls]
-    [http.routers.gitea]
-      entryPoints = ['web']
-      rule = 'Host(`{{ env "GITEAHOSTNAME"}}`)'
-      middlewares = ['gitea-https-redirect']
-      service = "gitea-srv"
-    [http.routers.gitea-secure]
-      entryPoints = ['websecure']
-      rule = 'Host(`{{ env "GITEAHOSTNAME"}}`)'
-      service = "gitea-srv"
-      [http.routers.gitea-secure.tls]
-        certResolver = "letsencrypt"
-        [[http.routers.gitea-secure.tls.domains]]
-          main = '{{ env "CERTNAME"}}'
+    # [http.routers.gitea]
+    #   entryPoints = ['web']
+    #   rule = 'Host(`{{ env "GITEAHOSTNAME"}}`)'
+    #   middlewares = ['gitea-https-redirect']
+    #   service = "gitea-srv"
+    # [http.routers.gitea-secure]
+    #   entryPoints = ['websecure']
+    #   rule = 'Host(`{{ env "GITEAHOSTNAME"}}`)'
+    #   service = "gitea-srv"
+    #   [http.routers.gitea-secure.tls]
+    #     certResolver = "letsencrypt"
+    #     [[http.routers.gitea-secure.tls.domains]]
+    #       main = '{{ env "CERTNAME"}}'
     [http.routers.keycloak]
       entryPoints = ['web']
       rule = 'Host(`{{ env "KEYCLOAKHOSTNAME"}}`)'
@@ -97,26 +97,117 @@
         certResolver = "letsencrypt"
         [[http.routers.kafka-ui-secure.tls.domains]]
           main = '{{ env "CERTNAME"}}'
-    [http.routers.jenkins]
+    # [http.routers.jenkins]
+    #    entryPoints = ['web']
+    #    rule = 'Host(`{{ env "JENKINSHOSTNAME"}}`)'
+    #    middlewares = ['jenkins-https-redirect']
+    #    service = "jenkins-srv"
+    # [http.routers.jenkins-secure]
+    #   entryPoints = ['websecure']
+    #   rule = 'Host(`{{ env "JENKINSHOSTNAME"}}`)'
+    #   service = "jenkins-srv"
+    #   [http.routers.jenkins-secure.tls]
+    #     certResolver = "letsencrypt"
+    #     [[http.routers.jenkins-secure.tls.domains]]
+    #       main = '{{ env "CERTNAME"}}'
+    [http.routers.jellyfin]
        entryPoints = ['web']
-       rule = 'Host(`{{ env "JENKINSHOSTNAME"}}`)'
-       middlewares = ['jenkins-https-redirect']
-       service = "jenkins-srv"
-     [http.routers.jenkins-secure]
-       entryPoints = ['websecure']
-       rule = 'Host(`{{ env "JENKINSHOSTNAME"}}`)'
-       service = "jenkins-srv"
-       [http.routers.jenkins-secure.tls]
-         certResolver = "letsencrypt"
-         [[http.routers.jenkins-secure.tls.domains]]
-           main = '{{ env "CERTNAME"}}'
+       rule = 'Host(`{{ env "JELLYFINHOSTNAME"}}`)'
+       middlewares = ['jellyfin-https-redirect']
+       service = "jellyfin-srv"
+    [http.routers.jellyfin-secure]
+      entryPoints = ['websecure']
+      rule = 'Host(`{{ env "JELLYFINHOSTNAME"}}`)'
+      service = "jellyfin-srv"
+      [http.routers.jellyfin-secure.tls]
+        certResolver = "letsencrypt"
+        [[http.routers.jellyfin-secure.tls.domains]]
+          main = '{{ env "CERTNAME"}}'
+    [http.routers.qbittorrent]
+       entryPoints = ['web']
+       rule = 'Host(`{{ env "QBITTORRENTHOSTNAME"}}`)'
+       middlewares = ['qbittorrent-https-redirect']
+       service = "qbittorrent-srv"
+    [http.routers.qbittorrent-secure]
+      entryPoints = ['websecure']
+      rule = 'Host(`{{ env "QBITTORRENTHOSTNAME"}}`)'
+      service = "qbittorrent-srv"
+      [http.routers.qbittorrent-secure.tls]
+        certResolver = "letsencrypt"
+        [[http.routers.qbittorrent-secure.tls.domains]]
+          main = '{{ env "CERTNAME"}}'
+    [http.routers.radarr]
+       entryPoints = ['web']
+       rule = 'Host(`{{ env "RADARRHOSTNAME"}}`)'
+       middlewares = ['radarr-https-redirect']
+       service = "radarr-srv"
+    [http.routers.radarr-secure]
+      entryPoints = ['websecure']
+      rule = 'Host(`{{ env "RADARRHOSTNAME"}}`)'
+      service = "radarr-srv"
+      [http.routers.radarr-secure.tls]
+        certResolver = "letsencrypt"
+        [[http.routers.radarr-secure.tls.domains]]
+          main = '{{ env "CERTNAME"}}'
+    # [http.routers.jackett]
+    #    entryPoints = ['web']
+    #    rule = 'Host(`{{ env "JACKETTHOSTNAME"}}`)'
+    #    middlewares = ['jackett-https-redirect']
+    #    service = "jackett-srv"
+    # [http.routers.jackett-secure]
+    #   entryPoints = ['websecure']
+    #   rule = 'Host(`{{ env "JACKETTHOSTNAME"}}`)'
+    #   service = "jackett-srv"
+    #   [http.routers.jackett-secure.tls]
+    #     certResolver = "letsencrypt"
+    #     [[http.routers.jackett-secure.tls.domains]]
+    #       main = '{{ env "CERTNAME"}}'
+    [http.routers.prowlarr]
+       entryPoints = ['web']
+       rule = 'Host(`{{ env "PROWLARRHOSTNAME"}}`)'
+       middlewares = ['prowlarr-https-redirect']
+       service = "prowlarr-srv"
+    [http.routers.prowlarr-secure]
+      entryPoints = ['websecure']
+      rule = 'Host(`{{ env "PROWLARRHOSTNAME"}}`)'
+      service = "prowlarr-srv"
+      [http.routers.prowlarr-secure.tls]
+        certResolver = "letsencrypt"
+        [[http.routers.prowlarr-secure.tls.domains]]
+          main = '{{ env "CERTNAME"}}'
+    [http.routers.sonarr]
+       entryPoints = ['web']
+       rule = 'Host(`{{ env "SONARRHOSTNAME"}}`)'
+       middlewares = ['sonarr-https-redirect']
+       service = "sonarr-srv"
+    [http.routers.sonarr-secure]
+      entryPoints = ['websecure']
+      rule = 'Host(`{{ env "SONARRHOSTNAME"}}`)'
+      service = "sonarr-srv"
+      [http.routers.sonarr-secure.tls]
+        certResolver = "letsencrypt"
+        [[http.routers.sonarr-secure.tls.domains]]
+          main = '{{ env "CERTNAME"}}'
+    [http.routers.jellyseerr]
+       entryPoints = ['web']
+       rule = 'Host(`{{ env "JELLYSEERRHOSTNAME"}}`)'
+       middlewares = ['jellyseerr-https-redirect']
+       service = "jellyseerr-srv"
+    [http.routers.jellyseerr-secure]
+      entryPoints = ['websecure']
+      rule = 'Host(`{{ env "JELLYSEERRHOSTNAME"}}`)'
+      service = "jellyseerr-srv"
+      [http.routers.jellyseerr-secure.tls]
+        certResolver = "letsencrypt"
+        [[http.routers.jellyseerr-secure.tls.domains]]
+          main = '{{ env "CERTNAME"}}'
   [http.middlewares]
     [http.middlewares.traefik-auth]
       [http.middlewares.traefik-auth.basicAuth]
         usersFile = "/home/traefik/credentials"
-    [http.middlewares.gitea-https-redirect.redirectScheme]
-      scheme = "https"
-      permanent = true
+    # [http.middlewares.gitea-https-redirect.redirectScheme]
+    #   scheme = "https"
+    #   permanent = true
     [http.middlewares.keycloak-https-redirect.redirectScheme]
       scheme = "https"
       permanent = true
@@ -132,16 +223,37 @@
     [http.middlewares.kafka-ui-https-redirect.redirectScheme]
       scheme = "https"
       permanent = true
-    [http.middlewares.jenkins-https-redirect.redirectScheme]
-      scheme = "https"
-      permanent = true
     [http.middlewares.arango-https-redirect.redirectScheme]
       scheme = "https"
       permanent = true
+    # [http.middlewares.jenkins-https-redirect.redirectScheme]
+    #   scheme = "https"
+    #   permanent = true
+    [http.middlewares.jellyfin-https-redirect.redirectScheme]
+      scheme = "https"
+      permanent = true
+    [http.middlewares.qbittorrent-https-redirect.redirectScheme]
+      scheme = "https"
+      permanent = true
+    [http.middlewares.radarr-https-redirect.redirectScheme]
+      scheme = "https"
+      permanent = true
+    # [http.middlewares.jackett-https-redirect.redirectScheme]
+    #   scheme = "https"
+    #   permanent = true
+    [http.middlewares.prowlarr-https-redirect.redirectScheme]
+      scheme = "https"
+      permanent = true
+    [http.middlewares.sonarr-https-redirect.redirectScheme]
+      scheme = "https"
+      permanent = true
+    [http.middlewares.jellyseerr-https-redirect.redirectScheme]
+      scheme = "https"
+      permanent = true
   [http.services]
-    [http.services.gitea-srv]
-      [[http.services.gitea-srv.loadBalancer.servers]]
-        url = "http://gitea:3000"
+    # [http.services.gitea-srv]
+    #   [[http.services.gitea-srv.loadBalancer.servers]]
+    #     url = "http://gitea:3000"
     [http.services.keycloak-srv]
       [[http.services.keycloak-srv.loadBalancer.servers]]
         url = "http://keycloak:8080"
@@ -157,9 +269,30 @@
     [http.services.kafka-ui-srv]
       [[http.services.kafka-ui-srv.loadBalancer.servers]]
         url = "http://kafbat-ui:8080"
-    [http.services.jenkins-srv]
-      [[http.services.jenkins-srv.loadBalancer.servers]]
-        url = "http://jenkins:8080"
     [http.services.arango-srv]
       [[http.services.arango-srv.loadBalancer.servers]]
         url = "http://arangodb:8529"
+    [http.services.jenkins-srv]
+      [[http.services.jenkins-srv.loadBalancer.servers]]
+        url = "http://jenkins:8080"
+    [http.services.jellyfin-srv]
+      [[http.services.jellyfin-srv.loadBalancer.servers]]
+        url = "http://jellyfin:8096"
+    [http.services.qbittorrent-srv]
+      [[http.services.qbittorrent-srv.loadBalancer.servers]]
+        url = "http://qbittorrent:8080"
+    [http.services.radarr-srv]
+      [[http.services.radarr-srv.loadBalancer.servers]]
+        url = "http://radarr:7878"
+    # [http.services.jackett-srv]
+    #   [[http.services.jackett-srv.loadBalancer.servers]]
+    #     url = "http://jackett:9117"
+    [http.services.prowlarr-srv]
+      [[http.services.prowlarr-srv.loadBalancer.servers]]
+        url = "http://prowlarr:9696"
+    [http.services.sonarr-srv]
+      [[http.services.sonarr-srv.loadBalancer.servers]]
+        url = "http://sonarr:8989"
+    [http.services.jellyseerr-srv]
+      [[http.services.jellyseerr-srv.loadBalancer.servers]]
+        url = "http://jellyseerr:5055"

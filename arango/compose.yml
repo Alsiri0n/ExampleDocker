@@ -1,15 +1,20 @@
-networks:
-  default:
-    name: ${MYNET:?}
-    external: true
+x-networks: &networks
+  networks:
+    - default
+x-labels: &enable_traefik
+  labels:
+    - traefik.enable=true
+x-restart: &restart
+  restart: unless-stopped
 
 services:
   arangodb:
+    <<: [*networks, *enable_traefik, *restart]
     container_name: arangodb
     image: arangodb:${ARANGO_TAG:?}
     environment:
       ARANGO_ROOT_PASSWORD: "${ARANGO_ROOT_PASSWORD:?}"
-      TZ: ${TIMEZONE:?}
+      TZ: ${TIMEZONE:-UTC}
     ports:
       - 8529:8529
     # "--log.level", "all=warning", 
@@ -23,11 +28,11 @@ services:
               "--web-interface.proxy-request-check", "true", 
               "--web-interface.trusted-proxy", "0.0.0.0"
               ]
-    restart: unless-stopped
     volumes:
-      - ./data:/var/lib/arangodb3
-      - ./app-data:/var/lib/arangodb3-apps
-    networks:
-      - default
-    labels:
-      - "traefik.enable=true"
+      - ./data:/var/lib/arangodb3:z
+      - ./app-data:/var/lib/arangodb3-apps:z
+
+networks:
+  default:
+    name: ${MYNET:?}
+    external: true

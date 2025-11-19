@@ -1,11 +1,9 @@
 x-networks: &networks
   networks:
     - default
-
 x-labels: &enable_traefik
   labels:
     - traefik.enable=true
-
 x-restart: &restart
   restart: unless-stopped
 

@@ -1,0 +1,16 @@
+Required to host machine in hosts file
+192.168.1.2 kafka.lan
+With correct ip address
+
+Documentation for apache kafka
+https://kafka.apache.org/documentation/
+
+Run no-auth container
+docker compose -f compose.yml -f compose.no-auth.yml up -d
+podman compose -f compose.yml -f compose.no-auth.yml up -d
+
+kafka.xml
+sudo cp kafka.xml /etc/firewalld/services
+sudo firewall-cmd --zone=my-zone --add-service=kafka --permanent
+sudo firewall-cmd --reload
+sudo firewall-cmd --zone=alsihomelab --list-all

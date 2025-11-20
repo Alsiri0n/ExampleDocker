@@ -13,8 +13,9 @@ services:
     image: quay.io/keycloak/keycloak${KEYCLOAK_TAG:?}
     container_name: keycloak
     command: start
-    ports:
-      - ${KEYCLOAK_PORT:-0.0.0.0:8080}:8080
+    # We use traefik for access to keycloak
+    # ports:
+    #   - ${KEYCLOAK_PORT:-0.0.0.0:8080}:8080
     environment:
       # KC_LOG_LEVEL: DEBUG
 
@@ -26,10 +27,10 @@ services:
       KC_DB_URL: "${KC_DB_URL:?}"
       KC_HEALTH_ENABLED: "${KC_HEALTH_ENABLED:?}"
 
-      KC_HTTP_ENABLED: true
-      KC_HOSTNAME_STRICT: false
+      KC_HTTP_ENABLED: "true"
+      KC_HOSTNAME_STRICT: "false"
       KC_PROXY_HEADERS: "xforwarded"
-      PROXY_ADDRESS_FORWARDING: true
+      PROXY_ADDRESS_FORWARDING: "true"
 
       TZ: ${TIMEZONE:-UTC}
     healthcheck:

@@ -55,8 +55,8 @@
                 provider = "cloudflare"
                 # https://doc.traefik.io/traefik/master/migrate/v3/#v32-to-v33
 #                delayBeforeCheck = 10
-                [certificatesResolvers.letsencrypt.acme.dnsChallenge.propogation]
-		    delayBeforeCheck = 10
+                [certificatesResolvers.letsencrypt.acme.dnsChallenge.propagation]
+                    delayBeforeChecks = 10
 
 
 #[docker]

@@ -1,0 +1,37 @@
+x-networks: &networks
+  networks:
+    - default
+x-restart: &restart
+  restart: unless-stopped
+
+services:
+  yugabyte:
+    <<: [*networks, *restart]
+    image: yugabytedb/yugabyte${YUGABYTE_TAG:-:latest}
+    container_name: yugabyte
+    command: >
+      bin/yugabyted start
+      --background=false
+      --advertise_address=yugabyte
+      --master_flags="max_log_size=64"
+      --tserver_flags="max_log_size=64"
+      --callhome=false
+    ports:
+       - "5432:5433"
+    expose:
+      # YSQL (PostgreSQL-compatible)
+      - "5433"
+      - "9042"
+      - "7000"
+      - "9000"
+      - "15433"
+    environment:
+      YSQL_USER: ${YSQL_USER:?}
+      YSQL_PASSWORD: ${YSQL_PASSWORD:?}
+    # volumes:
+    #   - ./data:/home/yugabyte/yb_data:Z
+
+networks:
+  default:
+    name: ${MYNET:?}
+    external: true

@@ -30,6 +30,7 @@ services:
       ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_ARGS_BULK_DELAY: 1
       SPRING_CONFIG_ADDITIONAL_LOCATION: /usr/local/zeebe/config/exporter.yml
       ZEEBE_BROKER_EXPORTERS_KAFKA_ARGS_PRODUCER_SERVERS: kafka:9092
+      ZEEBE_BROKER_CLUSTER_PARTITIONS_COUNT: ${ZEEBE_BROKER_CLUSTER_PARTITIONS_COUNT:-1}
     volumes:
       - ./zeebe:/usr/local/zeebe/data:z,U
       - ./exporter/exporter.yml:/usr/local/zeebe/config/exporter.yml:z

@@ -1,12 +1,15 @@
 x-networks: &networks
   networks:
     - default
+x-labels: &project_labels
+  labels:
+    project_name: "${PR_NAME:-project}"
 x-restart: &restart
   restart: unless-stopped
 
 services:
   redis:
-    <<: [*networks, *restart]
+    <<: [*networks, *restart, *project_labels]
     image: redis:alpine
     container_name: redis
     ports:

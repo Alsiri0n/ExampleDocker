@@ -3,14 +3,17 @@ x-networks: &networks
     - default
 x-labels: &enable_traefik
   labels:
-    - traefik.enable=true
+    traefik.enable: true
+x-labels: &project_labels
+  labels:
+    project_name: "${PR_NAME:-project}"
 x-restart: &restart
   restart: unless-stopped
 
 services:
   # https://github.com/camunda/camunda-distributions/blob/main/docker-compose/versions/camunda-8.5/docker-compose.yaml
   zeebe:
-    <<: [*networks, *restart]
+    <<: [*networks, *restart, *project_labels]
     image: camunda/zeebe${ZEEBE_TAG:?}
     container_name: zeebe
     ports:
@@ -40,7 +43,7 @@ services:
 
 
   elasticsearch_cm:
-    <<: [*networks, *restart]
+    <<: [*networks, *restart, *project_labels]
     image: docker.elastic.co/elasticsearch/elasticsearch${STACK_VERSION:?}
     container_name: elasticsearch_cm
     ports:
@@ -67,7 +70,7 @@ services:
         hard: 65536
 
   kibana_cm:
-    <<: [*networks, *enable_traefik, *restart]
+    <<: [*networks, *restart, *project_labels]
     image: docker.elastic.co/kibana/kibana${STACK_VERSION:?}
     container_name: kibana_cm
     # We use traefik for access to kibana_cm

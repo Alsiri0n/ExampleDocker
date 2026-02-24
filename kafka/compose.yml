@@ -3,14 +3,16 @@ x-networks: &networks
     - default
 x-labels: &enable_traefik
   labels:
-    - traefik.enable=true
+    traefik.enable: true
+x-labels: &project_labels
+  labels:
+    project_name: "${PR_NAME:-project}"
 x-restart: &restart
   restart: unless-stopped
 
-
 services:
   kafka:
-    <<: [*networks, *restart]
+    <<: [*networks, *restart, *project_labels]
     image: apache/kafka${KAFKA_TAG:?}
     container_name: kafka
     ports:
@@ -101,7 +103,7 @@ services:
     #   - ./truststore.jks:/opt/bitnami/schema-registry/certs/truststore.jks:ro
 
   kafbat-ui:
-    <<: [*networks, *enable_traefik, *restart]
+    <<: [*networks, *restart, *project_labels]
     image: ghcr.io/kafbat/kafka-ui:latest
     container_name: kafbat-ui
     # We use traefik for access to kafbat

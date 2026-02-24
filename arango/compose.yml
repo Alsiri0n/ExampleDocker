@@ -3,13 +3,16 @@ x-networks: &networks
     - default
 x-labels: &enable_traefik
   labels:
-    - traefik.enable=true
+    traefik.enable: true
+x-labels: &project_labels
+  labels:
+    project_name: "${PR_NAME:-project}"
 x-restart: &restart
   restart: unless-stopped
 
 services:
   arangodb:
-    <<: [*networks, *enable_traefik, *restart]
+    <<: [*networks, *restart, *project_labels]
     container_name: arangodb
     image: arangodb:${ARANGO_TAG:?}
     environment:

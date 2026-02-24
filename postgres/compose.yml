@@ -3,7 +3,7 @@ x-networks: &networks
     - default
 x-labels: &project_labels
   labels:
-    project_name: "${PR_NAME:-project}"
+    project_name: ${PR_NAME:-project}
 x-restart: &restart
   restart: unless-stopped
 

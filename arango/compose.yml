@@ -6,7 +6,7 @@ x-labels: &enable_traefik
     traefik.enable: true
 x-labels: &project_labels
   labels:
-    project_name: "${PR_NAME:-project}"
+    project_name: ${PR_NAME:-project}
 x-restart: &restart
   restart: unless-stopped
 
@@ -16,7 +16,7 @@ services:
     container_name: arangodb
     image: arangodb:${ARANGO_TAG:?}
     environment:
-      ARANGO_ROOT_PASSWORD: "${ARANGO_ROOT_PASSWORD:?}"
+      ARANGO_ROOT_PASSWORD: ${ARANGO_ROOT_PASSWORD:?}
       TZ: ${TIMEZONE:-UTC}
     ports:
       - 8529:8529

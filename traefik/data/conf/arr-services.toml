@@ -1,0 +1,20 @@
+[http]
+  [http.services]
+    [http.services.jellyfin-srv]
+      [[http.services.jellyfin-srv.loadBalancer.servers]]
+        url = "http://jellyfin:8096"
+    [http.services.qbittorrent-srv]
+      [[http.services.qbittorrent-srv.loadBalancer.servers]]
+        url = "http://qbittorrent:8080"
+    [http.services.radarr-srv]
+      [[http.services.radarr-srv.loadBalancer.servers]]
+        url = "http://radarr:7878"
+    [http.services.prowlarr-srv]
+      [[http.services.prowlarr-srv.loadBalancer.servers]]
+        url = "http://prowlarr:9696"
+    [http.services.sonarr-srv]
+      [[http.services.sonarr-srv.loadBalancer.servers]]
+        url = "http://sonarr:8989"
+    [http.services.jellyseerr-srv]
+      [[http.services.jellyseerr-srv.loadBalancer.servers]]
+        url = "http://jellyseerr:5055"

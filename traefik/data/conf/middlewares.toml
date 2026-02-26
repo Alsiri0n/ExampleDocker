@@ -1,0 +1,29 @@
+[http]
+  [http.middlewares]
+    [http.middlewares.traefik-auth]
+      [http.middlewares.traefik-auth.basicAuth]
+        usersFile = "/home/traefik/credentials"
+    # [http.middlewares.gitea-https-redirect.redirectScheme]
+    #   scheme = "https"
+    #   permanent = true
+    [http.middlewares.keycloak-https-redirect.redirectScheme]
+      scheme = "https"
+      permanent = true
+    [http.middlewares.minio-https-redirect.redirectScheme]
+      scheme = "https"
+      permanent = true
+    [http.middlewares.kibana-https-redirect.redirectScheme]
+      scheme = "https"
+      permanent = true
+    [http.middlewares.kibana_cm-https-redirect.redirectScheme]
+      scheme = "https"
+      permanent = true
+    [http.middlewares.kafka-ui-https-redirect.redirectScheme]
+      scheme = "https"
+      permanent = true
+    [http.middlewares.arango-https-redirect.redirectScheme]
+      scheme = "https"
+      permanent = true
+    # [http.middlewares.jenkins-https-redirect.redirectScheme]
+    #   scheme = "https"
+    #   permanent = true

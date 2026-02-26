@@ -1,0 +1,20 @@
+[http]
+  [http.middlewares]
+    [http.middlewares.jellyfin-https-redirect.redirectScheme]
+      scheme = "https"
+      permanent = true
+    [http.middlewares.qbittorrent-https-redirect.redirectScheme]
+      scheme = "https"
+      permanent = true
+    [http.middlewares.radarr-https-redirect.redirectScheme]
+      scheme = "https"
+      permanent = true
+    [http.middlewares.prowlarr-https-redirect.redirectScheme]
+      scheme = "https"
+      permanent = true
+    [http.middlewares.sonarr-https-redirect.redirectScheme]
+      scheme = "https"
+      permanent = true
+    [http.middlewares.jellyseerr-https-redirect.redirectScheme]
+      scheme = "https"
+      permanent = true

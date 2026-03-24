@@ -1,0 +1,27 @@
+x-networks: &networks
+  networks:
+    - default
+x-labels: &project_labels
+  labels:
+    project_name: ${PR_NAME:-project}
+x-restart: &restart
+  restart: unless-stopped
+
+services:
+  postgres_14:
+    <<: [*networks, *restart, *project_labels]
+    image: postgres${POSTGRES_TAG:-:latest}
+    container_name: postgres_14
+    ports:
+      - ${POSTGRESQL_PORT:-0.0.0.0:5432}:5432
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASS:?}
+      TZ: ${TIMEZONE:-UTC}
+    volumes:
+      - ./data:/var/lib/postgresql/data:z
+      - /etc/localtime:/etc/localtime:ro
+
+networks:
+  default:
+    name: ${MYNET:?}
+    external: true

@@ -24,6 +24,9 @@
     [http.middlewares.arango-https-redirect.redirectScheme]
       scheme = "https"
       permanent = true
+    [http.middlewares.camunda_operate-https-redirect.redirectScheme]
+      scheme = "https"
+      permanent = true
     # [http.middlewares.jenkins-https-redirect.redirectScheme]
     #   scheme = "https"
     #   permanent = true

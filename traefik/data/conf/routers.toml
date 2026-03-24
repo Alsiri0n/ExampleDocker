@@ -97,6 +97,19 @@
         certResolver = "letsencrypt"
         [[http.routers.kafka-ui-secure.tls.domains]]
           main = '{{ env "CERTNAME"}}'
+    [http.routers.camunda_operate]
+      entryPoints = ['web']
+      rule = 'Host(`{{ env "CAMUNDA_OPERATEHOSTNAME"}}`)'
+      middlewares = ['camunda_operate-https-redirect']
+      service = "camunda_operate-srv"
+    [http.routers.camunda_operate-secure]
+      entryPoints = ['websecure']
+      rule = 'Host(`{{ env "CAMUNDA_OPERATEHOSTNAME"}}`)'
+      service = "camunda_operate-srv"
+      [http.routers.camunda_operate-secure.tls]
+        certResolver = "letsencrypt"
+        [[http.routers.camunda_operate-secure.tls.domains]]
+          main = '{{ env "CERTNAME"}}'
     # [http.routers.jenkins]
     #    entryPoints = ['web']
     #    rule = 'Host(`{{ env "JENKINSHOSTNAME"}}`)'

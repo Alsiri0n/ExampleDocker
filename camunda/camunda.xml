@@ -5,4 +5,5 @@
   <port protocol="tcp" port="26500"/> <!-- Zeebe grpc -->
   <port protocol="tcp" port="9201"/> <!--ElasticSearch -->
   <port protocol="tcp" port="8088"/> <!-- Zeebe API HTTP -->
+  <port protocol="tcp" port="8089"/> <!-- Zeebe API HTTP -->
 </service>

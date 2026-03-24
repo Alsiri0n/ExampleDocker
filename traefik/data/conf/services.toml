@@ -21,6 +21,9 @@
     [http.services.arango-srv]
       [[http.services.arango-srv.loadBalancer.servers]]
         url = "http://arangodb:8529"
+    [http.services.camunda_operate-srv]
+      [[http.services.camunda_operate-srv.loadBalancer.servers]]
+        url = "http://operate:8080"
     # [http.services.jenkins-srv]
     #   [[http.services.jenkins-srv.loadBalancer.servers]]
     #     url = "http://jenkins:8080"

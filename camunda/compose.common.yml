@@ -42,6 +42,22 @@ services:
     #   elasticsearch_cm:
     #     condition: service_healthy
 
+  # operate:
+  #   <<: [*networks, *restart, *project_labels]
+  #   image: camunda/operate${CAMUNDA_OPERATE_VERSION:?}
+  #   container_name: operate
+  #   ports:
+  #     - ${CAMUNDA_OPERATE_PORT:?}:8080
+  #   environment: # https://docs.camunda.io/docs/self-managed/operate-deployment/configuration/
+  #     - CAMUNDA_OPERATE_ZEEBE_GATEWAYADDRESS=zeebe:26500
+  #     - CAMUNDA_OPERATE_ELASTICSEARCH_URL=http://elasticsearch:9200
+  #     - CAMUNDA_OPERATE_ZEEBEELASTICSEARCH_URL=http://elasticsearch:9200
+  #     - CAMUNDA_OPERATE_ELASTICSEARCH_NUMBEROFSHARDS=1
+  #     - SERVER_FORWARD_HEADERS_STRATEGY=NATIVE
+  #   depends_on:
+  #     zeebe:
+  #         condition: service_started
+
 networks:
   default:
     name: ${MYNET:?}

@@ -1,9 +1,11 @@
 Required to host machine in hosts file
-192.168.1.2 kafka.lan
+192.168.1.2 kafka.home.arpa
 With correct ip address
 
 Documentation for apache kafka
 https://kafka.apache.org/documentation/
+Transformation  config to env
+https://github.com/apache/kafka/blob/trunk/docker/examples/README.md#using-environment-variables
 
 Run no-auth container
 docker compose -f compose.yml -f compose.no-auth.yml up -d

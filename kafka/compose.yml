@@ -34,7 +34,12 @@ services:
       # Clients
       KAFKA_SASL_ENABLED_MECHANISMS: PLAIN,OAUTHBEARER
       KAFKA_LISTENER_NAME_OAUTH_PLAIN_SASL_JAAS_CONFIG: org.apache.kafka.common.security.plain.PlainLoginModule required;
+      # 4.2.0 changes for OAUTH  -Dorg.apache.kafka.sasl.oauthbearer.allowed.urls=https://www.example.com,file:///tmp/token  
+      # DOESNT WORK -- KAFKA_SASL_OAUTHBEARER_ALLOWED_URLS: "${KEYCLOAK_PROTOCOL:?}://${KEYCLOAK_HOST:?}:${KEYCLOAK_PORT}/realms/${KEYCLOAK_REALM:?}/protocol/openid-connect/certs,file:///tmp/token"
       KAFKA_SASL_OAUTHBEARER_JWKS_ENDPOINT_URL: "${KEYCLOAK_PROTOCOL:?}://${KEYCLOAK_HOST:?}:${KEYCLOAK_PORT}/realms/${KEYCLOAK_REALM:?}/protocol/openid-connect/certs"
+      KAFKA_OPTS: "-Dorg.apache.kafka.sasl.oauthbearer.allowed.urls=${KEYCLOAK_PROTOCOL:?}://${KEYCLOAK_HOST:?}:${KEYCLOAK_PORT}/realms/${KEYCLOAK_REALM:?}/protocol/openid-connect/certs,file:///tmp/token"
+      KAFKA_SASL_OAUTHBEARER_ASSERTION_CLAIM_AUD: kafka
+      KAFKA_SASL_OAUTHBEARER_EXPECTED_AUDIENCE: kafka
       KAFKA_LISTENER_NAME_OAUTH_OAUTHBEARER_SASL_JAAS_CONFIG: org.apache.kafka.common.security.oauthbearer.OAuthBearerLoginModule required;
       KAFKA_LISTENER_NAME_OAUTH_OAUTHBEARER_SASL_SERVER_CALLBACK_HANDLER_CLASS: org.apache.kafka.common.security.oauthbearer.OAuthBearerValidatorCallbackHandler
 

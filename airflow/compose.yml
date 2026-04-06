@@ -1,0 +1,19 @@
+x-networks: &networks
+  networks:
+    - default
+x-labels: &enable_traefik
+  labels:
+    traefik.enable: true
+x-labels: &project_labels
+  labels:
+    project_name: ${PR_NAME:-project}
+x-restart: &restart
+  restart: unless-stopped
+
+services:
+  airflow:
+
+networks:
+  default:
+    name: ${MYNET:?}
+    external: true

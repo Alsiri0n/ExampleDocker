@@ -110,6 +110,19 @@
         certResolver = "letsencrypt"
         [[http.routers.camunda_operate-secure.tls.domains]]
           main = '{{ env "CERTNAME"}}'
+    [http.routers.sonarqube]
+      entryPoints = ['web']
+      rule = 'Host(`{{ env "SONARQUBEHOSTNAME"}}`)'
+      middlewares = ['sonarqube-https-redirect']
+      service = "sonarqube-srv"
+    [http.routers.sonarqube-secure]
+      entryPoints = ['websecure']
+      rule = 'Host(`{{ env "SONARQUBEHOSTNAME"}}`)'
+      service = "sonarqube-srv"
+      [http.routers.sonarqube-secure.tls]
+        certResolver = "letsencrypt"
+        [[http.routers.sonarqube-secure.tls.domains]]
+          main = '{{ env "CERTNAME"}}'
     # [http.routers.jenkins]
     #    entryPoints = ['web']
     #    rule = 'Host(`{{ env "JENKINSHOSTNAME"}}`)'

@@ -15,3 +15,6 @@ data/
 *.rego
 permissions_and_rules.json
 /camunda/zeebe/
+sonarqube_data/
+sonarqube_temp/
+sonarqube_logs/

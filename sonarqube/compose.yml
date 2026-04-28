@@ -24,7 +24,7 @@ services:
     volumes:
       - ./sonarqube_data:/opt/sonarqube/data:Z,U
       - ./sonarqube_extensions:/opt/sonarqube/extensions:Z,U
-      - ./sonarqube_logs:/opt/sonarqube/logs:Z,U
+      - ./logs:/opt/sonarqube/logs:Z,U
       - ./sonarqube_temp:/opt/sonarqube/temp:Z,U
     tmpfs:
       - /tmp:size=256M,mode=1777

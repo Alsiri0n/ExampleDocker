@@ -19,15 +19,32 @@ services:
     ports:
     - ${OS_PORT:-0.0.0.0:9200}:9200
     environment:
-      OPENSEARCH_INITIAL_ADMIN_PASSWORD: ${OPENSEARCH_INITIAL_ADMIN_PASSWORD:?}
       bootstrap.memory_lock: "true"
-      OPENSEARCH_JAVA_OPTS: "-Xms512m -Xmx512m"
-      DISABLE_INSTALL_DEMO_CONFIG: "true"
-      DISABLE_SECURITY_PLUGIN: "true"
       discovery.type: "single-node"
+      OPENSEARCH_JAVA_OPTS: "-Xms512m -Xmx512m"
+      OPENSEARCH_INITIAL_ADMIN_PASSWORD: ${OPENSEARCH_INITIAL_ADMIN_PASSWORD:?}
+      # DISABLE_INSTALL_DEMO_CONFIG: "true"
+      # DISABLE_SECURITY_PLUGIN: "true"
+      # 🔐 TLS (single cert used as CA + server cert)
+      plugins.security.ssl.transport.pemcert_filepath: ${CERTS_DIR:?}opensearch.crt
+      plugins.security.ssl.transport.pemkey_filepath: ${CERTS_DIR:?}opensearch.key
+      plugins.security.ssl.transport.pemtrustedcas_filepath: ${CERTS_DIR:?}opensearch.crt
+      plugins.security.ssl.http.enabled: "true"
+      plugins.security.ssl.http.pemcert_filepath: ${CERTS_DIR:?}opensearch.crt
+      plugins.security.ssl.http.pemkey_filepath: ${CERTS_DIR:?}opensearch.key
+      plugins.security.ssl.http.pemtrustedcas_filepath: ${CERTS_DIR:?}opensearch.crt
+      plugins.security.allow_default_init_securityindex: "true"
     volumes:
       - ./data:/usr/share/opensearch/data:z,U
-      # - ./logs:/usr/share/opensearch/logs:Z,U
+      - ./certs:${CERTS_DIR:?}:Z
+      - ./logs:/usr/share/opensearch/logs:Z,U
+    user: "1000:1000"
+    healthcheck:
+      test: >
+        sh -c 'curl --cacert ${CERTS_DIR:?}/opensearch.crt -s -o /dev/null -w "%{http_code}" https://localhost:9200 | grep -Eq "200|401|403"'
+      interval: 2s
+      timeout: 2s
+      retries: 30
     ulimits:
       memlock:
         soft: -1 # Set memlock to unlimited (no soft or hard limit)
@@ -41,12 +58,21 @@ services:
     image: opensearchproject/opensearch-dashboards${OPENSEARCH_VERSION:?}
     container_name: opensearch_dashboard
     environment:
-      OPENSEARCH_HOSTS: '["http://opensearch:9200"]'
+      OPENSEARCH_HOSTS: '["https://opensearch:9200"]'
+      OPENSEARCH_USERNAME: "admin"
+      OPENSEARCH_PASSWORD: "${OPENSEARCH_INITIAL_ADMIN_PASSWORD:?}"
+      # DISABLE_SECURITY_DASHBOARDS_PLUGIN: "true"
+      # 🔐 TLS trust (your self-signed cert acting as CA)
+      OPENSEARCH_SSL_VERIFICATION_MODE: certificate
+      OPENSEARCH_SSL_CERTIFICATEAUTHORITIES: /usr/share/opensearch-dashboards/config/opensearch.crt
+      # telemetry
+      DISABLE_TELEMETRY: true
     # We use traefik for access to opensearch dashboard
     # ports:
     #   - 5601:5601
     volumes:
       - ./opensearch_dashboards.yml:/usr/share/opensearch-dashboards/config/opensearch_dashboards.yml:z
+      - ./certs_dash/opensearch.crt:/usr/share/opensearch-dashboards/config/opensearch.crt:Z
     depends_on:
       - opensearch
 

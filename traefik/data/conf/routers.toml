@@ -123,6 +123,19 @@
         certResolver = "letsencrypt"
         [[http.routers.sonarqube-secure.tls.domains]]
           main = '{{ env "CERTNAME"}}'
+    [http.routers.opensearch_dashboard]
+      entryPoints = ['web']
+      rule = 'Host(`{{ env "OPENSEARCH_DASHBOARDHOSTNAME"}}`)'
+      middlewares = ['opensearch_dashboard-https-redirect']
+      service = "opensearch_dashboard-srv"
+    [http.routers.opensearch_dashboard-secure]
+      entryPoints = ['websecure']
+      rule = 'Host(`{{ env "OPENSEARCH_DASHBOARDHOSTNAME"}}`)'
+      service = "opensearch_dashboard-srv"
+      [http.routers.opensearch_dashboard-secure.tls]
+        certResolver = "letsencrypt"
+        [[http.routers.opensearch_dashboard-secure.tls.domains]]
+          main = '{{ env "CERTNAME"}}'
     # [http.routers.jenkins]
     #    entryPoints = ['web']
     #    rule = 'Host(`{{ env "JENKINSHOSTNAME"}}`)'

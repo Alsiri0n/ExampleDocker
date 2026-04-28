@@ -27,6 +27,9 @@
     [http.services.sonarqube-srv]
       [[http.services.sonarqube-srv.loadBalancer.servers]]
         url = "http://sonarqube:9000"
+    [http.services.opensearch_dashboard-srv]
+      [[http.services.opensearch_dashboard-srv.loadBalancer.servers]]
+        url = "http://opensearch_dashboard:5601"
     # [http.services.jenkins-srv]
     #   [[http.services.jenkins-srv.loadBalancer.servers]]
     #     url = "http://jenkins:8080"

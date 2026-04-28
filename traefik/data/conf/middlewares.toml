@@ -30,6 +30,9 @@
     [http.middlewares.sonarqube-https-redirect.redirectScheme]
       scheme = "https"
       permanent = true
+    [http.middlewares.opensearch_dashboard-https-redirect.redirectScheme]
+      scheme = "https"
+      permanent = true
     # [http.middlewares.jenkins-https-redirect.redirectScheme]
     #   scheme = "https"
     #   permanent = true
